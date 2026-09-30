@@ -49,7 +49,9 @@ for i, (bagian, teks) in enumerate(zip(potongan, LABEL)):
     x = PAD + i * (lebar + GAP)
     kanvas.paste(bagian, (x, PAD_ATAS))
     gambar.rectangle([x, PAD_ATAS, x + lebar - 1, PAD_ATAS + TINGGI_JENDELA - 1], outline=GARIS)
-    gambar.text((x + 2, PAD_ATAS - 30), f"mobile 390px / {teks}", font=font, fill=INK_DIM)
+    # Lebar ditulis dari gambar, bukan angka yang diketik manual: label yang
+    # diketik manual pernah tertulis 390px padahal panelnya 375px.
+    gambar.text((x + 2, PAD_ATAS - 30), f"mobile {lebar}px / {teks}", font=font, fill=INK_DIM)
 
 kanvas.save(KELUAR, optimize=True)
 print("ditulis:", KELUAR, kanvas.size, os.path.getsize(KELUAR), "B")

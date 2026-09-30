@@ -37,7 +37,7 @@ dipercaya.
 | `pipeline/features/` | bangun panel bulanan dan mingguan, ekspor JSON dashboard |
 | `pipeline/train/` | latih LightGBM dan GLM, evaluasi walk-forward |
 | `dashboard/` | situs Astro, membaca JSON dari `dashboard/public/data/` |
-| `tests/` | tiga harness kontrak, jalan di CI |
+| `tests/` | empat harness kontrak, jalan di CI |
 | `tools/` | pembuat aset sosial, pemotong tangkapan layar, sumber diagram |
 | `data/raw/` | data mentah |
 | `data/lake/` | turunan: parquet, csv, json metrik |
@@ -214,29 +214,39 @@ Di Linux dan macOS, ganti `.venv/Scripts/` jadi `.venv/bin/`.
 
 ## Tes
 
-Repo ini sengaja tidak menambah pytest. Yang ada tiga harness kontrak di `tests/`,
-dijalankan sebagai skrip biasa (stdlib plus polars) supaya hasilnya bisa dibaca siapa pun
-tanpa memasang apa pun:
+Repo ini sengaja tidak menambah pytest. Yang ada empat harness kontrak di `tests/`,
+dijalankan sebagai skrip biasa (stdlib plus polars dan Pillow) supaya hasilnya bisa dibaca
+siapa pun tanpa memasang apa pun:
 
 ```bash
 .venv/Scripts/pip install -r requirements-dev.txt
 .venv/Scripts/python.exe tests/run_all.py
 ```
 
-134 cek, semuanya lulus di mesin pengembang.
+162 cek, semuanya lulus di mesin pengembang. Angka itu tidak diketik dari ingatan:
+`run_all.py` membandingkan jumlah hasil nyata dengan kalimat di README, dan gagal
+kalau keduanya tidak sama.
 
 | Berkas | Yang dijaga |
 |---|---|
 | `tests/test_export_contract.py` | pipeline ke JSON dashboard: angka cocok dengan `data/lake`, ekspor deterministik, plus kontrol negatif |
 | `tests/test_dashboard_contract.py` | kode wilayah lintas berkas (`jak-pus` vs `Jakpus` vs `Jakarta Pusat`) dan isi hasil build |
 | `tests/test_style_contract.py` | lantai ukuran font, reduced-motion, tabel, skrip halaman benar-benar dimuat, dan kartu share menunjuk domain yang benar |
+| `tests/test_assets_contract.py` | tangkapan layar README dan kartu share benar-benar berisi gambar, bukan kotak kosong, ukurannya sesuai, dan ikutnya tertaut di HTML hasil build |
 
 Harness export menjalankan `export_dashboard.py`, jadi ia menulis ulang berkas di
 `dashboard/public/data/`. Isi sebelum tes disimpan dan dipulihkan di akhir supaya working
 tree tetap bersih setelah tes dijalankan.
 
+Kenapa harness aset memeriksa piksel dan bukan menjalankan skrip pembuatnya: skrip
+pemotong tangkapan layar memotong dari `~/shot-desktop.png` dan `~/shot-mobile.png`, dua
+tangkapan mentah yang sengaja tidak ikut repo. Jadi skripnya tidak bisa jalan di runner
+bersih, sementara hasil akhirnya bisa diperiksa siapa pun. Yang diperiksa karena itu
+adalah berkasnya: berapa warna unik di dalamnya. PNG satu warna akan ditolak, dan PNG
+yang rusak gagal dibaca, bukan lolos diam-diam.
+
 CI di `.github/workflows/ci.yml` memasang dependensi, build dashboard, lalu menjalankan
-ketiga harness itu di runner bersih. Hasilnya sama: 134 PASS / 0 FAIL. Lognya terbuka di
+keempat harness itu di runner bersih. Hasilnya sama: 162 PASS / 0 FAIL. Lognya terbuka di
 tab Actions, jadi angka di baris ini bisa diperiksa siapa saja, bukan cuma diklaim.
 
 ## Keterbatasan

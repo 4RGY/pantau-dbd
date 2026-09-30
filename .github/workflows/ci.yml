@@ -1,6 +1,6 @@
 name: CI
 
-# Repo ini tidak punya test runner. Yang ada adalah tiga harness kontrak di tests/.
+# Repo ini tidak punya test runner. Yang ada adalah empat harness kontrak di tests/.
 # Workflow ini menjalankannya di runner bersih, supaya klaim di README (walk-forward,
 # angka metrik, kontrak kode wilayah) bisa DICEK orang lain, bukan cuma dipercaya.
 

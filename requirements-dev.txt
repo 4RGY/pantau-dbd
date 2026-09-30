@@ -1,8 +1,13 @@
 # Dependensi untuk tests/ (kontrak pipeline -> JSON -> build dashboard).
 #
-# Sengaja TIDAK memakai requirements.txt penuh: harness kontrak hanya butuh polars
-# dan numpy. Menarik lightgbm/statsmodels/shap ke CI cuma menambah waktu dan
+# Sengaja TIDAK memakai requirements.txt penuh: harness kontrak hanya butuh polars,
+# numpy, dan Pillow. Menarik lightgbm/statsmodels/shap ke CI cuma menambah waktu dan
 # titik gagal tanpa menambah cakupan. Untuk menjalankan pipeline penuh, pakai
 # requirements.txt.
+#
+# Pillow: dipakai tests/test_assets_contract.py untuk membaca piksel aset publik
+# (membuktikan tangkapan layar README dan kartu share tidak kosong) dan
+# tools/make_assets.py untuk menggambar aset itu. Tanpa ini keduanya gagal.
 polars==1.44.2
 numpy==2.4.3
+pillow==12.3.0
