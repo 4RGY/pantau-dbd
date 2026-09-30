@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Alur data pantau-dbd</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Palet diambil dari dashboard/src/styles/global.css supaya diagram sewarna situs. */
+  :root {
+    --bg: #08090b;
+    --haze: rgba(255,255,255,0.024);
+    --haze-2: rgba(255,255,255,0.045);
+    --line: rgba(255,255,255,0.072);
+    --line-2: rgba(255,255,255,0.13);
+    --ink: #eceae6;
+    --dim: #9c9a95;
+    --faint: #6b6965;
+    --amber: #d99b3f;
+    --steel: #7f93a6;
+    --green: #5f9c7e;
+    --red: #c05540;
+    --sans: 'Inter', -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    width: 1480px;
+    padding: 34px 0 26px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .kepala { padding: 0 50px 20px; }
+  .kepala .kicker {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: 9px;
+  }
+  .kepala h1 { font-size: 25px; font-weight: 600; letter-spacing: -.015em; }
+  .kepala p { color: var(--dim); font-size: 13px; margin-top: 8px; max-width: 900px; line-height: 1.55; }
+</style>
+</head>
+<body>
+
+<div class="kepala">
+  <div class="kicker">Arsitektur</div>
+  <h1>Alur data pantau-dbd, dari API cuaca sampai halaman yang bisa dibuka</h1>
+  <p>Empat tahap. Tiap kotak menyebut berkas yang benar-benar ada di repo, jadi diagram ini bisa ditelusuri baris per baris.</p>
+</div>
+
+<svg width="1480" height="810" viewBox="0 0 1480 810" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#141619" stroke-width="0.5"/>
+    </pattern>
+    <marker id="panah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#d99b3f"/>
+    </marker>
+  </defs>
+
+  <rect width="1480" height="810" fill="url(#grid)"/>
+
+  <!-- ==== panah digambar dulu supaya berada di belakang kotak (z-order) ==== -->
+  <line x1="352" y1="270" x2="404" y2="270" stroke="#d99b3f" stroke-width="1.4" marker-end="url(#panah)"/>
+  <line x1="712" y1="270" x2="764" y2="270" stroke="#d99b3f" stroke-width="1.4" marker-end="url(#panah)"/>
+  <line x1="1072" y1="270" x2="1124" y2="270" stroke="#d99b3f" stroke-width="1.4" marker-end="url(#panah)"/>
+  <line x1="740" y1="462" x2="740" y2="514" stroke="rgba(255,255,255,0.16)" stroke-width="1.2" stroke-dasharray="3,4"/>
+  <line x1="740" y1="700" x2="740" y2="726" stroke="rgba(255,255,255,0.16)" stroke-width="1.2" stroke-dasharray="3,4"/>
+
+  <!-- ==== TAHAP 1: SUMBER ==== -->
+  <g>
+    <rect x="50" y="80" width="300" height="380" rx="10" fill="#08090b"/>
+    <rect x="50" y="80" width="300" height="380" rx="10" fill="rgba(255,255,255,0.024)" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+    <rect x="50" y="80" width="300" height="2" rx="1" fill="#d99b3f" opacity="0.55"/>
+
+    <text x="78" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#6b6965">01</text>
+    <text x="104" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#9c9a95">SUMBER DATA</text>
+    <text x="78" y="156" font-family="'Inter', sans-serif" font-size="19" font-weight="600" fill="#eceae6">Luar repo</text>
+    <line x1="78" y1="178" x2="322" y2="178" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+
+    <circle cx="86" cy="212" r="3" fill="#d99b3f"/>
+    <text x="102" y="216" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">Open-Meteo archive</text>
+    <text x="102" y="234" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">cuaca harian 2020 sampai kini, 6 wilayah</text>
+
+    <circle cx="86" cy="278" r="3" fill="#d99b3f"/>
+    <text x="102" y="282" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">Dinkes DKI Jakarta</text>
+    <text x="102" y="300" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">kasus bulanan, 2021-01 sampai 2024-12</text>
+
+    <circle cx="86" cy="344" r="3" fill="#d99b3f"/>
+    <text x="102" y="348" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">BPS</text>
+    <text x="102" y="366" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">populasi dan kepadatan per wilayah, statis</text>
+
+    <text x="78" y="412" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Tidak ada API key.</text>
+    <text x="78" y="430" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Satu arsip cuaca, satu laporan kasus.</text>
+  </g>
+
+  <!-- ==== TAHAP 2: AMBIL DAN BENTUK ==== -->
+  <g>
+    <rect x="410" y="80" width="300" height="380" rx="10" fill="#08090b"/>
+    <rect x="410" y="80" width="300" height="380" rx="10" fill="rgba(255,255,255,0.024)" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+    <rect x="410" y="80" width="300" height="2" rx="1" fill="#7f93a6" opacity="0.55"/>
+
+    <text x="438" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#6b6965">02</text>
+    <text x="464" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#9c9a95">AMBIL DAN BENTUK</text>
+    <text x="438" y="156" font-family="'Inter', sans-serif" font-size="19" font-weight="600" fill="#eceae6">Python, tanpa framework</text>
+    <line x1="438" y1="178" x2="682" y2="178" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+
+    <circle cx="446" cy="206" r="3" fill="#7f93a6"/>
+    <text x="462" y="210" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">pipeline/fetch/</text>
+    <text x="462" y="228" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">tarik dari API, simpan mentah ke data/raw/</text>
+
+    <circle cx="446" cy="262" r="3" fill="#7f93a6"/>
+    <text x="462" y="266" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">pipeline/features/</text>
+    <text x="462" y="284" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">bangun_bulanan.py, bangun_mingguan.py</text>
+
+    <circle cx="446" cy="318" r="3" fill="#7f93a6"/>
+    <text x="462" y="322" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">data/lake/</text>
+    <text x="462" y="340" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">panel parquet, csv, dan json metrik</text>
+
+    <circle cx="446" cy="374" r="3" fill="#7f93a6"/>
+    <text x="462" y="378" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">12 fitur</text>
+    <text x="462" y="396" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">cuaca lag-1, musim, batas wilayah</text>
+
+    <text x="438" y="412" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Cuaca memakai lag-1.</text>
+    <text x="438" y="430" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Prakiraan harus tersedia lebih dulu.</text>
+  </g>
+
+  <!-- ==== TAHAP 3: LATIH DAN UJI ==== -->
+  <g>
+    <rect x="770" y="80" width="300" height="380" rx="10" fill="#08090b"/>
+    <rect x="770" y="80" width="300" height="380" rx="10" fill="rgba(255,255,255,0.024)" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+    <rect x="770" y="80" width="300" height="2" rx="1" fill="#c05540" opacity="0.55"/>
+
+    <text x="798" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#6b6965">03</text>
+    <text x="824" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#9c9a95">LATIH DAN UJI</text>
+    <text x="798" y="156" font-family="'Inter', sans-serif" font-size="19" font-weight="600" fill="#eceae6">Empat model, satu garis uji</text>
+    <line x1="798" y1="178" x2="1042" y2="178" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+
+    <circle cx="806" cy="206" r="3" fill="#7f93a6"/>
+    <text x="822" y="210" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">LightGBM, 12 fitur</text>
+    <text x="822" y="228" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">dilatih langsung di ruang kasus, bukan log</text>
+
+    <circle cx="806" cy="262" r="3" fill="#7f93a6"/>
+    <text x="822" y="266" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">GLM rasio</text>
+    <text x="822" y="284" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">pembanding linier, 4 fitur</text>
+
+    <circle cx="806" cy="318" r="3" fill="#c05540"/>
+    <text x="822" y="322" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">naive lag-1, seasonal lag-12</text>
+    <text x="822" y="340" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">pembanding yang justru menang</text>
+
+    <circle cx="806" cy="374" r="3" fill="#7f93a6"/>
+    <text x="822" y="378" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">walk-forward, 2 fold</text>
+    <text x="822" y="396" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">2021-22 ke 2023, lalu 2021-23 ke 2024</text>
+
+    <text x="798" y="412" font-family="'Inter', sans-serif" font-size="11.5" fill="#c05540" font-style="italic">Skill -2,4% bulanan,</text>
+    <text x="798" y="430" font-family="'Inter', sans-serif" font-size="11.5" fill="#c05540" font-style="italic">-69,3% mingguan. Kalah.</text>
+  </g>
+
+  <!-- ==== TAHAP 4: EKSPOR DAN TAMPILKAN ==== -->
+  <g>
+    <rect x="1130" y="80" width="300" height="380" rx="10" fill="#08090b"/>
+    <rect x="1130" y="80" width="300" height="380" rx="10" fill="rgba(255,255,255,0.024)" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+    <rect x="1130" y="80" width="300" height="2" rx="1" fill="#5f9c7e" opacity="0.55"/>
+
+    <text x="1158" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#6b6965">04</text>
+    <text x="1184" y="122" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#9c9a95">EKSPOR DAN TAMPILKAN</text>
+    <text x="1158" y="156" font-family="'Inter', sans-serif" font-size="19" font-weight="600" fill="#eceae6">Sampai ke browser</text>
+    <line x1="1158" y1="178" x2="1402" y2="178" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+
+    <circle cx="1166" cy="206" r="3" fill="#7f93a6"/>
+    <text x="1182" y="210" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">export_dashboard.py</text>
+    <text x="1182" y="228" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">4 json: meta, evaluasi, deret, profil</text>
+
+    <circle cx="1166" cy="262" r="3" fill="#7f93a6"/>
+    <text x="1182" y="266" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">Astro plus ECharts</text>
+    <text x="1182" y="284" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">impor per-modul, 194 kB gzip</text>
+
+    <circle cx="1166" cy="318" r="3" fill="#7f93a6"/>
+    <text x="1182" y="322" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">4 grafik dan tabel</text>
+    <text x="1182" y="340" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">deret, cuaca, SHAP, peta selisih MAE</text>
+
+    <circle cx="1166" cy="374" r="3" fill="#5f9c7e"/>
+    <text x="1182" y="378" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#5f9c7e">Vercel</text>
+    <text x="1182" y="396" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">pantau-dbd-seven.vercel.app</text>
+
+    <text x="1158" y="412" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Statis, tanpa server.</text>
+    <text x="1158" y="430" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965" font-style="italic">Push ke main tidak menerbitkan ulang.</text>
+  </g>
+
+  <!-- ==== KENDALI MUTU ==== -->
+  <g>
+    <rect x="50" y="520" width="1380" height="180" rx="10" fill="#08090b"/>
+    <rect x="50" y="520" width="1380" height="180" rx="10" fill="rgba(255,255,255,0.045)" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+
+    <text x="78" y="556" font-family="'JetBrains Mono', monospace" font-size="10.5" letter-spacing="1.7" fill="#9c9a95">KENDALI MUTU, JALAN DI TIAP PUSH</text>
+    <line x1="78" y1="572" x2="1402" y2="572" stroke="rgba(255,255,255,0.072)" stroke-width="1"/>
+
+    <circle cx="86" cy="606" r="3" fill="#7f93a6"/>
+    <text x="102" y="610" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">tests/run_all.py</text>
+    <text x="102" y="628" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">3 harness kontrak, 134 cek</text>
+    <text x="102" y="646" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965">angka, kode wilayah, gaya, skrip termuat</text>
+
+    <circle cx="436" cy="606" r="3" fill="#7f93a6"/>
+    <text x="452" y="610" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">.github/workflows/ci.yml</text>
+    <text x="452" y="628" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">build plus 3 harness di runner bersih</text>
+    <text x="452" y="646" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965">hijau dalam 31 detik</text>
+
+    <circle cx="786" cy="606" r="3" fill="#7f93a6"/>
+    <text x="802" y="610" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">tools/make_assets.py</text>
+    <text x="802" y="628" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">og.png 1200x630 dari angka asli</text>
+    <text x="802" y="646" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965">kartu share tidak bisa berbohong</text>
+
+    <circle cx="1136" cy="606" r="3" fill="#c05540"/>
+    <text x="1152" y="610" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#eceae6">jebakan yang dikunci</text>
+    <text x="1152" y="628" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">komentar di baris pertama skrip</text>
+    <text x="1152" y="646" font-family="'Inter', sans-serif" font-size="11.5" fill="#6b6965">bikin Astro buang tag script, chart kosong</text>
+  </g>
+
+  <!-- ==== LEGENDA, di luar semua kotak ==== -->
+  <g>
+    <circle cx="58" cy="752" r="3.5" fill="#d99b3f"/>
+    <text x="72" y="756" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">data mentah masuk</text>
+    <circle cx="228" cy="752" r="3.5" fill="#7f93a6"/>
+    <text x="242" y="756" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">diproses di dalam repo</text>
+    <circle cx="418" cy="752" r="3.5" fill="#5f9c7e"/>
+    <text x="432" y="756" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">terbit dan bisa dibuka</text>
+    <circle cx="598" cy="752" r="3.5" fill="#c05540"/>
+    <text x="612" y="756" font-family="'Inter', sans-serif" font-size="11.5" fill="#9c9a95">pembanding yang mengalahkan model</text>
+
+    <text x="1424" y="756" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="10.5" fill="#6b6965">4 tahun data, 6 wilayah, 4 model</text>
+  </g>
+</svg>
+
+</body>
+</html>
