@@ -44,9 +44,11 @@ Skill LGBM vs naive lag-4: **-69.3%** (kalah jauh).
 Artinya sinyal cuaca belum terbaca model pada ukuran data ini. Model 12 fitur tidak
 lebih baik dari model 2 fitur.
 
-**Kepulauan Seribu.** Kasus di sana hampir selalu nol, sehingga naive nyaris sempurna
-(MAE 0.31) sementara model memprediksi 27.75. Model over-predict di wilayah nol kasus.
-Ini masalah desain, bukan masalah data.
+**Kepulauan Seribu.** Skala kasusnya beda jauh dari wilayah lain: rata-rata 2.2 kasus per
+bulan, maksimum 10. Di model bulanan MAE-nya kecil (model 1.61 melawan naive 1.46) tapi
+sMAPE-nya meledak (133% melawan 127%), jadi model gagal secara relatif. Di model mingguan
+kontrasnya ekstrem: naive nyaris sempurna (MAE 0.31) sementara model memprediksi 27.75.
+Wilayah berkasus tipis seperti ini butuh model dua tahap (hurdle), belum dikerjakan.
 
 **2024 tahun KLB.** Lonjakan kasus nasional 2024 berada di luar rentang latih, dan model
 berbasis pohon tidak bisa ekstrapolasi di luar rentang itu. Naive menang justru karena
@@ -101,4 +103,23 @@ cd dashboard && npm install && npm run dev
 - Kasus DBD dilaporkan per bulan. Horizon mingguan butuh disagregasi dan itu menambah noise.
 - Laporan kasus punya lag rilis, jadi setiap skenario prediksi bergantung asumsi cutoff informasi.
 - Rentang data masih pendek (4 tahun) untuk model dengan banyak fitur.
-- Wilayah dengan kasus mendekati nol perlu penanganan khusus (misal model hurdle), belum dilakukan.
+- Wilayah berkasus tipis (Kepulauan Seribu, rata-rata 2.2 kasus per bulan) perlu penanganan
+  khusus seperti model hurdle, belum dilakukan.
+
+## Dashboard
+
+Astro statis di `dashboard/`, membaca JSON dari `dashboard/public/data/`. Empat grafik
+(deret waktu, cuaca vs kasus, SHAP, peta selisih MAE) plus tabel per wilayah.
+
+Catatan pemeliharaan: ada **dua sistem kode wilayah** yang hidup berdampingan.
+
+| Sumber | Kode | Contoh |
+|---|---|---|
+| `deret.json`, geojson | slug | `jak-pus` |
+| `evaluasi.json` (kolom `w`) | ringkas | `Jakpus` |
+| `meta.json` (`per_region`) | nama panjang | `Jakarta Pusat` |
+
+Pemetaannya eksplisit di array `WILAYAH` pada `src/pages/index.astro`. Kalau satu kode
+tidak dipetakan, grafik wilayah jadi kosong **tanpa error apa pun** di console. Karena itu
+`chartTS()` sekarang menampilkan pesan merah kalau tidak ada baris yang cocok, bukan
+kanvas kosong.

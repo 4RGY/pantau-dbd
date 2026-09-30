@@ -1,0 +1,443 @@
+/* pantau-dbd - sistem visual
+   Aturan rumah: near-black, panel haze tanpa border kotak, aksen hemat.
+   Angka pakai mono tabular biar kolom metrik lurus. */
+
+:root {
+  --bg: #08090b;
+  --bg-soft: rgba(255, 255, 255, 0.024);
+  --bg-soft-2: rgba(255, 255, 255, 0.045);
+  --line: rgba(255, 255, 255, 0.072);
+  --line-2: rgba(255, 255, 255, 0.13);
+
+  --ink: #eceae6;
+  --ink-dim: #9c9a95;
+  --ink-faint: #6b6965;
+
+  --amber: #d99b3f;
+  --steel: #7f93a6;
+  --red: #c05540;
+  --green: #5f9c7e;
+
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
+
+  --w: 1180px;
+  --gut: clamp(20px, 5vw, 64px);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.62;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* grain halus: tekstur, bukan glow */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+.wrap { max-width: var(--w); margin: 0 auto; padding: 0 var(--gut); }
+
+a { color: inherit; }
+
+/* ---------- tipografi ---------- */
+
+.display {
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 0.96;
+  margin: 0;
+}
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.lede {
+  font-size: clamp(16px, 1.55vw, 19px);
+  line-height: 1.55;
+  color: var(--ink-dim);
+  max-width: 62ch;
+  margin: 0;
+}
+
+.num {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- bagian ---------- */
+
+section { padding: clamp(48px, 7vw, 92px) 0; }
+
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 28px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: clamp(24px, 3.4vw, 40px);
+}
+
+.sec-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(25px, 3.2vw, 38px);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.sec-note {
+  font-size: 13px;
+  color: var(--ink-faint);
+  max-width: 46ch;
+  text-align: right;
+  margin: 0;
+}
+
+@media (max-width: 720px) {
+  .sec-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .sec-note { text-align: left; }
+}
+
+/* ---------- hero ---------- */
+
+.hero {
+  padding: clamp(52px, 9vw, 118px) 0 clamp(28px, 4.5vw, 52px);
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(26px, 4vw, 60px);
+  align-items: end;
+}
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; align-items: start; }
+}
+
+.hero-title {
+  font-family: var(--serif);
+  font-weight: 400;
+  font-size: clamp(42px, 7.6vw, 100px);
+  line-height: 0.93;
+  letter-spacing: -0.035em;
+  margin: 14px 0 0;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--amber);
+}
+
+.hero-meta { display: grid; gap: 18px; }
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.meta-row dt { color: var(--ink-faint); margin: 0; }
+.meta-row dd { margin: 0; color: var(--ink-dim); text-align: right; }
+
+/* ---------- vonis ---------- */
+
+.verdict {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  gap: clamp(20px, 3.4vw, 52px);
+  padding: clamp(26px, 3.4vw, 40px) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+@media (max-width: 820px) {
+  .verdict { grid-template-columns: 1fr; }
+}
+
+.verdict-tag {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--red);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.verdict-line {
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.1vw, 36px);
+  line-height: 1.16;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+
+.verdict-body { color: var(--ink-dim); font-size: 14.5px; }
+.verdict-body p { margin: 0 0 12px; }
+.verdict-body p:last-child { margin-bottom: 0; }
+
+/* ---------- strip metrik ---------- */
+
+.strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(158px, 1fr));
+  gap: 0;
+}
+
+.cell { padding: 20px 0 18px; border-top: 1px solid var(--line); }
+
+.cell-label {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: block;
+  margin-bottom: 9px;
+}
+
+.cell-value {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(23px, 2.5vw, 30px);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: block;
+}
+
+.cell-sub { font-size: 12px; color: var(--ink-faint); margin-top: 7px; display: block; }
+
+.v-good { color: var(--green); }
+.v-bad { color: var(--red); }
+.v-model { color: var(--amber); }
+.v-naive { color: var(--steel); }
+
+/* ---------- panel haze (tanpa border kotak) ---------- */
+
+.haze {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.032), rgba(255, 255, 255, 0.011));
+  border-radius: 3px;
+  padding: clamp(16px, 2.4vw, 26px);
+}
+
+/* ---------- tab ---------- */
+
+.tabs { display: flex; flex-wrap: wrap; gap: 2px; }
+
+.tab {
+  background: none;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  color: var(--ink-faint);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 7px 11px;
+  cursor: pointer;
+  transition: color 0.18s ease, border-color 0.18s ease;
+}
+
+.tab:hover { color: var(--ink-dim); }
+.tab[aria-selected='true'] { color: var(--ink); border-bottom-color: var(--amber); }
+.tab:focus-visible { outline: 1px solid var(--amber); outline-offset: 2px; }
+
+/* ---------- chart ---------- */
+
+.chart { width: 100%; height: 360px; }
+.chart-tall { height: 440px; }
+.chart-sm { height: 300px; }
+
+/* pesan gagal-senyap: chart kosong harus menjelaskan diri, bukan tampil blank */
+.empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0 24px;
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--neg);
+  background: linear-gradient(rgba(192, 85, 64, 0.05), rgba(192, 85, 64, 0.02));
+  border-radius: 3px;
+}
+
+.chart-cap {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  margin: 14px 0 0;
+  max-width: 74ch;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 0 0 16px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+
+.swatch { width: 14px; height: 2px; display: inline-block; }
+.sw-ink { background: var(--ink); }
+.sw-amber { background: var(--amber); }
+.sw-steel { background: var(--steel); }
+
+/* ---------- tabel ---------- */
+
+.tbl-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+th {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 400;
+  text-align: right;
+  padding: 0 0 10px;
+  border-bottom: 1px solid var(--line-2);
+  white-space: nowrap;
+}
+
+th:first-child { text-align: left; }
+
+td {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+td:first-child {
+  text-align: left;
+  font-family: var(--sans);
+  color: var(--ink);
+}
+
+tbody tr:hover td { color: var(--ink); background: rgba(255, 255, 255, 0.014); }
+
+.delta-pos { color: var(--green); }
+.delta-neg { color: var(--red); }
+
+/* ---------- dua kolom ---------- */
+
+.duo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+}
+
+@media (max-width: 860px) { .duo { grid-template-columns: 1fr; } }
+
+/* ---------- catatan / limitasi ---------- */
+
+.notes { display: grid; gap: 0; }
+
+.note {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.7fr);
+  gap: clamp(14px, 3vw, 40px);
+}
+
+.note:first-child { border-top: 1px solid var(--line); }
+
+@media (max-width: 720px) { .note { grid-template-columns: 1fr; gap: 6px; } }
+
+.note-h {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin: 0;
+}
+
+.note-b { color: var(--ink-dim); font-size: 14px; margin: 0; }
+.note-b strong { color: var(--ink); font-weight: 500; }
+
+/* ---------- footer ---------- */
+
+footer {
+  padding: clamp(34px, 5vw, 60px) 0;
+  border-top: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* ---------- utilitas ---------- */
+
+.mt-l { margin-top: clamp(22px, 3vw, 36px); }
+.mt-m { margin-top: 18px; }
+.sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.state {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding: 40px 0;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

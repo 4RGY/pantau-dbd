@@ -1,0 +1,769 @@
+---
+import Base from '../layouts/Base.astro';
+
+/* Dua sistem kode wilayah hidup berdampingan dan sengaja dipetakan eksplisit di sini:
+   - kode: slug yang dipakai deret.json + geojson ("jak-pus")
+   - eval: kode yang dipakai evaluasi.json ("Jakpus")
+   Kalau salah satu tidak dipetakan, chart wilayah jadi kosong tanpa error apa pun. */
+const WILAYAH = [
+  { kode: 'jak-pus', eval: 'Jakpus', nama: 'Jakarta Pusat', pendek: 'Jakpus' },
+  { kode: 'jak-ut', eval: 'Jakut', nama: 'Jakarta Utara', pendek: 'Jakut' },
+  { kode: 'jak-bar', eval: 'Jakbar', nama: 'Jakarta Barat', pendek: 'Jakbar' },
+  { kode: 'jak-sel', eval: 'Jaksel', nama: 'Jakarta Selatan', pendek: 'Jaksel' },
+  { kode: 'jak-tim', eval: 'Jaktim', nama: 'Jakarta Timur', pendek: 'Jaktim' },
+  { kode: 'kep-seribu', eval: 'Kepser', nama: 'Kepulauan Seribu', pendek: 'Kepser' },
+];
+---
+
+<Base
+  title="Peringatan dini DBD Jakarta"
+  desc="Pipeline prediksi kasus demam berdarah DKI Jakarta dari cuaca harian dan laporan kasus Dinkes. LightGBM, GLM rasio, dan baseline naive, dievaluasi walk-forward."
+>
+  <main class="wrap">
+    <!-- ============ HERO ============ -->
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Proyek riset / DKI Jakarta</p>
+        <h1 class="hero-title">Peringatan <em>dini</em> DBD Jakarta</h1>
+      </div>
+      <dl class="hero-meta">
+        <div class="meta-row">
+          <dt>Kasus terlapis</dt>
+          <dd class="num">2021-01 s/d 2024-12</dd>
+        </div>
+        <div class="meta-row">
+          <dt>Cuaca harian</dt>
+          <dd class="num">2020-01-01 s/d 2026-09-29</dd>
+        </div>
+        <div class="meta-row">
+          <dt>Wilayah</dt>
+          <dd class="num">6 kotamadya</dd>
+        </div>
+        <div class="meta-row">
+          <dt>Model</dt>
+          <dd class="num">LightGBM, GLM rasio</dd>
+        </div>
+        <div class="meta-row">
+          <dt>Evaluasi</dt>
+          <dd class="num">walk-forward, 2 fold</dd>
+        </div>
+      </dl>
+    </header>
+
+    <p class="lede" style="padding-bottom: clamp(30px, 4.5vw, 54px);">
+      Pipeline dari cuaca harian dan laporan kasus Dinkes sampai model prediksi bulanan.
+      Empat tahun data, enam wilayah, dan satu kesimpulan yang tidak nyaman: pada ukuran
+      data ini model belum mengalahkan baseline.
+    </p>
+
+    <!-- ============ VONIS ============ -->
+    <section style="padding-top:0;" aria-labelledby="vonis-h">
+      <div class="verdict">
+        <div>
+          <span class="verdict-tag">Vonis</span>
+          <h2 class="verdict-line" id="vonis-h">Model kalah dari baseline.</h2>
+        </div>
+        <div class="verdict-body">
+          <p>
+            MAE LightGBM <span class="num" id="v-mae-model">99,93</span> melawan naive lag-1
+            <span class="num" id="v-mae-naive">97,64</span>. Skill
+            <span class="num v-bad" id="v-skill">-2,4%</span>. Selisihnya tipis, tapi arahnya
+            konsisten. Untuk data ini, menempel di angka bulan lalu masih lebih akurat
+            daripada membaca cuaca.
+          </p>
+          <p>
+            Ablasi fitur menguatkan itu. Model 12 fitur
+            (<span class="num" id="v-ab-full">99,93</span>) tidak lebih baik dari model
+            2 fitur musim saja (<span class="num" id="v-ab-season">96,68</span>).
+            Sinyal cuaca belum terbaca pada rentang data ini.
+          </p>
+          <p>
+            Semua angka di halaman ini out-of-sample walk-forward. Bukan hasil in-sample.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ STRIP METRIK ============ -->
+    <section style="padding-top:0;" aria-labelledby="metrik-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="metrik-h">Angka utama</h2>
+        <p class="sec-note">Model bulanan, horizon satu bulan, 145 titik uji.</p>
+      </div>
+      <div class="strip" id="strip">
+        <div class="cell">
+          <span class="cell-label">MAE model</span>
+          <span class="cell-value v-model" id="m-model">99,93</span>
+          <span class="cell-sub">LightGBM, 12 fitur</span>
+        </div>
+        <div class="cell">
+          <span class="cell-label">MAE naive</span>
+          <span class="cell-value v-naive" id="m-naive">97,64</span>
+          <span class="cell-sub">lag-1, bulan lalu</span>
+        </div>
+        <div class="cell">
+          <span class="cell-label">Skill vs naive</span>
+          <span class="cell-value v-bad" id="m-skill">-2,4%</span>
+          <span class="cell-sub">negatif berarti kalah</span>
+        </div>
+        <div class="cell">
+          <span class="cell-label">Korelasi</span>
+          <span class="cell-value" id="m-r">0,848</span>
+          <span class="cell-sub">Pearson r, prediksi vs kasus</span>
+        </div>
+        <div class="cell">
+          <span class="cell-label">sMAPE</span>
+          <span class="cell-value" id="m-smape">50,2%</span>
+          <span class="cell-sub">naive 46,5%</span>
+        </div>
+        <div class="cell">
+          <span class="cell-label">Titik uji</span>
+          <span class="cell-value" id="m-n">145</span>
+          <span class="cell-sub">2023 dan 2024</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 1. PREDIKSI VS AKTUAL ============ -->
+    <section aria-labelledby="s1-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="s1-h">Prediksi melawan kenyataan</h2>
+        <p class="sec-note">
+          Walk-forward. Latih 2021-2022 uji 2023, lalu latih 2021-2023 uji 2024.
+        </p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Pilih wilayah" id="tabs-ts">
+        <button class="tab" role="tab" data-w="semua" aria-selected="true">Semua</button>
+        {WILAYAH.map((w) => (
+          <button
+            class="tab"
+            role="tab"
+            data-w={w.kode}
+            data-eval={w.eval}
+            aria-selected="false">{w.pendek}</button>
+        ))}
+      </div>
+
+      <div class="legend mt-m">
+        <span><i class="swatch sw-ink"></i>Kasus terlapis</span>
+        <span><i class="swatch sw-amber"></i>LightGBM</span>
+        <span><i class="swatch sw-steel"></i>Naive lag-1</span>
+      </div>
+
+      <div class="haze">
+        <div class="chart chart-tall" id="chart-ts" role="img" aria-label="Grafik kasus terlapis melawan prediksi"></div>
+      </div>
+      <p class="chart-cap">
+        Lonjakan 2024 memuncak di April, 6.102 kasus, tertinggi sepanjang rentang data.
+        Model meletakkan puncaknya di Mei (6.200), geser satu bulan, lalu over-predict besar
+        di Juni: 5.643 prediksi melawan 2.556 aktual. Model berbasis pohon tidak bisa
+        ekstrapolasi di luar rentang nilai yang pernah dilihat saat latih, dan naive selalu
+        tertinggal satu bulan karena hanya menyalin angka sebelumnya.
+      </p>
+    </section>
+
+    <!-- ============ 2. CUACA ============ -->
+    <section aria-labelledby="s2-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="s2-h">Cuaca dan kasus</h2>
+        <p class="sec-note">
+          Forecast dibuat saat data bulan sebelumnya sudah rilis, jadi input model adalah
+          cuaca lag, bukan cuaca bulan yang sedang diprediksi.
+        </p>
+      </div>
+
+      <div class="tabs" role="tablist" aria-label="Pilih wilayah" id="tabs-cuaca">
+        <button class="tab" role="tab" data-w="jak-pus" aria-selected="true">Jakpus</button>
+        {WILAYAH.slice(1).map((w) => (
+          <button class="tab" role="tab" data-w={w.kode} aria-selected="false">{w.pendek}</button>
+        ))}
+      </div>
+
+      <div class="tabs mt-m" role="tablist" aria-label="Pilih definisi cuaca" id="tabs-def">
+        <button class="tab" role="tab" data-def="bulan" aria-selected="true">Cuaca bulan sama</button>
+        <button class="tab" role="tab" data-def="lag1" aria-selected="false">Cuaca bulan sebelumnya</button>
+      </div>
+
+      <div class="legend mt-m">
+        <span><i class="swatch sw-amber"></i>Curah hujan, mm</span>
+        <span><i class="swatch sw-ink"></i>Kasus DBD</span>
+      </div>
+
+      <div class="haze">
+        <div class="chart" id="chart-cuaca" role="img" aria-label="Grafik curah hujan dan kasus DBD"></div>
+      </div>
+      <p class="chart-cap" id="cap-cuaca">
+        Dua seri ini sengaja dipisah dan dinamai jelas. Versi awal mengekspor cuaca lag dengan
+        nama generik, sehingga saat diplot sejajar kasus pembaca mengira itu cuaca bulan yang sama.
+        Itu cacat label, bukan cacat data: pipeline memang sengaja memakai cuaca lag karena cutoff
+        informasi di akhir bulan sebelumnya.
+      </p>
+    </section>
+
+    <!-- ============ 3. SHAP ============ -->
+    <section aria-labelledby="s3-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="s3-h">Apa yang dibaca model</h2>
+        <p class="sec-note">
+          Kontribusi fitur rata-rata absolut (SHAP), model bulanan.
+        </p>
+      </div>
+      <div class="haze">
+        <div class="chart chart-tall" id="chart-shap" role="img" aria-label="Peringkat kontribusi fitur"></div>
+      </div>
+      <p class="chart-cap">
+        Musim (sin) mendominasi jauh di atas yang lain. Curah hujan t-1 ada di peringkat dua,
+        tapi jaraknya lebar. Artinya kontribusi cuaca kecil dan tidak konsisten antar wilayah,
+        sejalan dengan hasil ablasi yang tidak bergerak.
+      </p>
+    </section>
+
+    <!-- ============ 4. PER WILAYAH ============ -->
+    <section aria-labelledby="s4-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="s4-h">Per wilayah</h2>
+        <p class="sec-note">
+          Selisih positif berarti model lebih baik dari naive di wilayah itu.
+        </p>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Wilayah</th>
+              <th scope="col">MAE model</th>
+              <th scope="col">MAE naive</th>
+              <th scope="col">Selisih</th>
+              <th scope="col">r model</th>
+              <th scope="col">r naive</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-region"></tbody>
+        </table>
+      </div>
+      <p class="chart-cap">
+        Jakarta Barat dan Jakarta Utara sedikit lebih baik dengan model. Kepulauan Seribu
+        ekstrem dengan cara lain: kasus di sana rata-rata 2,2 per bulan dan tidak pernah
+        lebih dari 10, jadi error absolutnya kecil (model 1,61 melawan naive 1,46) sementara
+        error relatifnya meledak (sMAPE 133% melawan 127%). Wilayah sekecil itu tidak adil
+        dinilai dengan MAE agregat yang didominasi wilayah besar.
+      </p>
+
+      <div class="mt-l">
+        <div class="haze">
+          <div class="chart chart-tall" id="chart-peta" role="img" aria-label="Peta selisih MAE per wilayah"></div>
+        </div>
+        <p class="chart-cap">
+          Merah berarti model kalah dari naive di wilayah itu, hijau berarti menang.
+          Kepulauan Seribu paling merah karena efek nol kasus di atas.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============ 5. BATASAN ============ -->
+    <section aria-labelledby="s5-h">
+      <div class="sec-head">
+        <h2 class="sec-title" id="s5-h">Yang membatasi</h2>
+        <p class="sec-note">Ditulis apa adanya, termasuk yang belum terselesaikan.</p>
+      </div>
+      <div class="notes">
+        <div class="note">
+          <p class="note-h">Rentang pendek</p>
+          <p class="note-b">
+            Empat tahun data bulanan. Untuk model dengan 12 fitur dan pola musiman,
+            itu <strong>terlalu sedikit</strong> untuk memisahkan sinyal dari noise.
+          </p>
+        </div>
+        <div class="note">
+          <p class="note-h">Cuaca tidak terbaca</p>
+          <p class="note-b">
+            Ablasi menunjukkan model cuaca-saja (98,31) dan musim-saja (96,68) tidak
+            berbeda jauh dari model penuh (99,93). <strong>Sinyal cuaca belum terpisah dari musim.</strong>
+          </p>
+        </div>
+        <div class="note">
+          <p class="note-h">Wilayah kasus tipis</p>
+          <p class="note-b">
+            Kepulauan Seribu rata-rata 2,2 kasus per bulan, maksimum 10. MAE-nya kecil (1,61)
+            tapi sMAPE 133%, jadi model gagal secara relatif di sana. Perlu model dua tahap
+            (hurdle) yang memisahkan keputusan ada kasus atau tidak. Belum dikerjakan.
+          </p>
+        </div>
+        <div class="note">
+          <p class="note-h">Lag rilis laporan</p>
+          <p class="note-b">
+            Setiap skenario prediksi bergantung pada asumsi kapan data bulan sebelumnya
+            benar-benar tersedia. Di lapangan, laporan Dinkes bisa datang lebih lambat.
+          </p>
+        </div>
+        <div class="note">
+          <p class="note-h">2024 tahun KLB</p>
+          <p class="note-b">
+            Lonjakan nasional 2024 di luar rentang latih. Model berbasis pohon tidak bisa
+            ekstrapolasi, jadi naive menang justru karena dia menempel di level terkini.
+          </p>
+        </div>
+        <div class="note">
+          <p class="note-h">Ambang klaim</p>
+          <p class="note-b">
+            Belum ada klaim early warning di halaman ini, dan itu disengaja.
+            <strong>Ambangnya skill di atas 2%.</strong> Selama masih negatif, tidak ada yang bisa diklaim.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div>
+        Sumber: Open-Meteo archive API, Dinkes DKI Jakarta, BPS. Evaluasi walk-forward
+        out-of-sample.
+      </div>
+      <div class="num" id="foot-stamp">memuat</div>
+    </footer>
+  </main>
+
+  <script>
+    import * as echarts from 'echarts';
+
+    const C = {
+      ink: '#eceae6',
+      dim: '#9c9a95',
+      faint: '#6b6965',
+      amber: '#d99b3f',
+      steel: '#7f93a6',
+      red: '#c05540',
+      green: '#5f9c7e',
+      line: 'rgba(255,255,255,0.072)',
+      line2: 'rgba(255,255,255,0.13)',
+    };
+
+    const NAMA = {
+      'jak-pus': 'Jakarta Pusat',
+      'jak-ut': 'Jakarta Utara',
+      'jak-bar': 'Jakarta Barat',
+      'jak-sel': 'Jakarta Selatan',
+      'jak-tim': 'Jakarta Timur',
+      'kep-seribu': 'Kepulauan Seribu',
+    };
+
+    const nf = (n, d = 2) =>
+      n === null || n === undefined
+        ? 'n/a'
+        : Number(n).toLocaleString('id-ID', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+    const ni = (n) => (n === null || n === undefined ? 'n/a' : Number(n).toLocaleString('id-ID'));
+
+    const label = (t, b) => ({ tahun: t, bulan: b, s: `${t}-${String(b).padStart(2, '0')}` });
+
+    const axisBase = {
+      axisLine: { lineStyle: { color: C.line2 } },
+      axisTick: { show: false },
+      axisLabel: { color: C.faint, fontSize: 11, fontFamily: 'JetBrains Mono' },
+      splitLine: { lineStyle: { color: C.line, type: [2, 4] } },
+    };
+
+    const tip = {
+      backgroundColor: 'rgba(10,11,13,0.94)',
+      borderWidth: 0,
+      padding: [10, 13],
+      textStyle: { color: C.ink, fontSize: 12, fontFamily: 'Inter' },
+      extraCssText: 'box-shadow:0 8px 26px rgba(0,0,0,0.6);border-radius:3px;',
+    };
+
+    const resize = (c) => {
+      window.addEventListener('resize', () => c.resize());
+    };
+
+    const setState = (el, msg) => {
+      el.innerHTML = `<div class="state">${msg}</div>`;
+    };
+
+    async function load() {
+      const [meta, evaluasi, deret, geo] = await Promise.all([
+        fetch('/data/meta.json').then((r) => r.json()),
+        fetch('/data/evaluasi.json').then((r) => r.json()),
+        fetch('/data/deret.json').then((r) => r.json()),
+        fetch('/data/jakarta_sederhana.geojson').then((r) => r.json()),
+      ]);
+      return { meta, evaluasi, deret, geo };
+    }
+
+    /* ---------- 1. deret waktu prediksi vs aktual ---------- */
+    function chartTS(el, data, kode) {
+      const prev = echarts.getInstanceByDom(el);
+      if (prev) prev.dispose();
+      el.innerHTML = '';
+      let rows = data;
+      if (kode !== 'semua') rows = data.filter((r) => r.w === kode);
+      // guard: chart kosong tanpa error adalah kegagalan senyap (pernah terjadi saat
+      // kode tab tidak cocok dengan kode di evaluasi.json). Tampilkan, jangan sembunyikan.
+      if (rows.length === 0) {
+        el.innerHTML =
+          '<p class="empty">Tidak ada baris evaluasi untuk kode wilayah "' +
+          kode +
+          '". Periksa pemetaan kode di array WILAYAH.</p>';
+        return;
+      }
+
+      const agg = new Map();
+      for (const r of rows) {
+        const s = label(r.tahun, r.bulan).s;
+        if (!agg.has(s)) agg.set(s, { kasus: 0, lgbm: 0, naive: 0, n: 0 });
+        const a = agg.get(s);
+        a.kasus += r.kasus ?? 0;
+        a.lgbm += r.pred_lgbm ?? 0;
+        a.naive += r.naive ?? 0;
+        a.n += 1;
+      }
+      const xs = [...agg.keys()].sort();
+
+      const ch = echarts.init(el, null, { renderer: 'canvas' });
+      ch.setOption({
+        grid: { left: 8, right: 14, top: 14, bottom: 6, containLabel: true },
+        tooltip: {
+          ...tip,
+          trigger: 'axis',
+          valueFormatter: (v) => (v === null ? 'n/a' : nf(v, 1)),
+        },
+        xAxis: {
+          type: 'category',
+          data: xs,
+          boundaryGap: false,
+          ...axisBase,
+          splitLine: { show: false },
+          axisLabel: {
+            ...axisBase.axisLabel,
+            interval: (i) => i % 3 === 0,
+            formatter: (v) => v.slice(2),
+          },
+        },
+        yAxis: { type: 'value', ...axisBase, name: 'kasus', nameTextStyle: { color: C.faint, fontSize: 10 } },
+        series: [
+          {
+            name: 'Kasus terlapis',
+            type: 'line',
+            data: xs.map((s) => agg.get(s).kasus),
+            smooth: false,
+            symbol: 'none',
+            lineStyle: { color: C.ink, width: 1.6 },
+            z: 5,
+          },
+          {
+            name: 'LightGBM',
+            type: 'line',
+            data: xs.map((s) => agg.get(s).lgbm),
+            smooth: false,
+            symbol: 'none',
+            lineStyle: { color: C.amber, width: 1.5 },
+            z: 4,
+          },
+          {
+            name: 'Naive lag-1',
+            type: 'line',
+            data: xs.map((s) => agg.get(s).naive),
+            smooth: false,
+            symbol: 'none',
+            lineStyle: { color: C.steel, width: 1.2, type: [3, 3] },
+            z: 3,
+          },
+        ],
+      });
+      resize(ch);
+    }
+
+    /* ---------- 2. cuaca vs kasus ---------- */
+    function chartCuaca(el, rows, def) {
+      const prev = echarts.getInstanceByDom(el);
+      if (prev) prev.dispose();
+      el.innerHTML = '';
+      const f = def === 'bulan' ? 'hujan_bulan' : 'hujan_lag1';
+      const xs = rows.map((r) => label(r.tahun, r.bulan).s);
+      const ch = echarts.init(el, null, { renderer: 'canvas' });
+      ch.setOption({
+        grid: { left: 8, right: 8, top: 22, bottom: 6, containLabel: true },
+        tooltip: {
+          ...tip,
+          trigger: 'axis',
+          formatter: (ps) => {
+            const head = `<div style="color:${C.faint};font-size:11px;margin-bottom:5px">${ps[0].axisValue}</div>`;
+            return (
+              head +
+              ps
+                .map((p) => {
+                  const unit = p.seriesName === 'Kasus DBD' ? ' kasus' : ' mm';
+                  return `<div>${p.marker} ${p.seriesName}: <b>${nf(p.value, 0)}${unit}</b></div>`;
+                })
+                .join('')
+            );
+          },
+        },
+        xAxis: {
+          type: 'category',
+          data: xs,
+          ...axisBase,
+          splitLine: { show: false },
+          axisLabel: {
+            ...axisBase.axisLabel,
+            interval: (i) => i % 3 === 0,
+            formatter: (v) => v.slice(2),
+          },
+        },
+        yAxis: [
+          {
+            type: 'value',
+            name: 'hujan (mm)',
+            nameTextStyle: { color: C.faint, fontSize: 10 },
+            ...axisBase,
+          },
+          {
+            type: 'value',
+            name: 'kasus',
+            nameTextStyle: { color: C.faint, fontSize: 10 },
+            ...axisBase,
+            splitLine: { show: false },
+          },
+        ],
+        series: [
+          {
+            name: 'Curah hujan',
+            type: 'bar',
+            data: rows.map((r) => r[f]),
+            itemStyle: { color: 'rgba(217,155,63,0.42)' },
+            barCategoryGap: '18%',
+            yAxisIndex: 0,
+            z: 2,
+          },
+          {
+            name: 'Kasus DBD',
+            type: 'line',
+            data: rows.map((r) => r.kasus),
+            symbol: 'none',
+            lineStyle: { color: C.ink, width: 1.6 },
+            yAxisIndex: 1,
+            z: 4,
+          },
+        ],
+      });
+      resize(ch);
+    }
+
+    /* ---------- 3. SHAP ---------- */
+    function chartShap(el, shap) {
+      const rows = [...shap].sort((a, b) => a.mean_abs - b.mean_abs);
+      const ch = echarts.init(el, null, { renderer: 'canvas' });
+      ch.setOption({
+        grid: { left: 8, right: 34, top: 8, bottom: 6, containLabel: true },
+        tooltip: { ...tip, trigger: 'item', formatter: (p) => `${p.name}<br/>mean |SHAP|: <b>${p.value.toFixed(4)}</b>` },
+        xAxis: { type: 'value', ...axisBase, splitLine: { lineStyle: { color: C.line, type: [2, 4] } } },
+        yAxis: {
+          type: 'category',
+          data: rows.map((r) => r.label),
+          axisLine: { lineStyle: { color: C.line2 } },
+          axisTick: { show: false },
+          axisLabel: { color: C.dim, fontSize: 11.5, fontFamily: 'Inter' },
+        },
+        series: [
+          {
+            type: 'bar',
+            data: rows.map((r, i) => ({
+              value: r.mean_abs,
+              itemStyle: {
+                color: i >= rows.length - 2 ? C.amber : 'rgba(217,155,63,0.4)',
+              },
+            })),
+            barWidth: '58%',
+            label: {
+              show: true,
+              position: 'right',
+              color: C.faint,
+              fontSize: 10.5,
+              fontFamily: 'JetBrains Mono',
+              formatter: (p) => p.value.toFixed(4),
+            },
+          },
+        ],
+      });
+      resize(ch);
+    }
+
+    /* ---------- 4. peta ---------- */
+    function chartPeta(el, geo, meta) {
+      const pr = meta.per_region;
+      const data = Object.keys(NAMA).map((kode) => {
+        const nama = NAMA[kode];
+        const m = pr[nama]?.model?.mae ?? null;
+        const n = pr[nama]?.naive?.mae ?? null;
+        const selisih = m !== null && n !== null ? n - m : null;
+        return { name: nama, kode, mae_model: m, mae_naive: n, selisih, value: selisih };
+      });
+
+      echarts.registerMap('jakarta', geo);
+      const vals = data.map((d) => d.selisih).filter((v) => v !== null);
+      const mx = Math.max(...vals.map(Math.abs));
+
+      const ch = echarts.init(el, null, { renderer: 'canvas' });
+      ch.setOption({
+        tooltip: {
+          ...tip,
+          trigger: 'item',
+          formatter: (p) => {
+            const d = data.find((x) => x.name === p.name);
+            if (!d) return p.name;
+            const tanda = d.selisih >= 0 ? 'lebih baik' : 'lebih buruk';
+            return (
+              `<div style="margin-bottom:5px"><b>${p.name}</b></div>` +
+              `MAE model: <b>${nf(d.mae_model, 2)}</b><br/>` +
+              `MAE naive: <b>${nf(d.mae_naive, 2)}</b><br/>` +
+              `Model ${tanda} <b>${nf(Math.abs(d.selisih), 2)}</b>`
+            );
+          },
+        },
+        visualMap: {
+          min: -mx,
+          max: mx,
+          left: 4,
+          bottom: 4,
+          itemWidth: 10,
+          itemHeight: 74,
+          text: ['model menang', 'model kalah'],
+          textStyle: { color: C.faint, fontSize: 10, fontFamily: 'Inter' },
+          inRange: { color: ['#4a7a63', '#22262a', '#8c3b2c'] },
+          calculable: false,
+        },
+        series: [
+          {
+            type: 'map',
+            map: 'jakarta',
+            // geojson memakai properti "nama", bukan "name" (default ECharts).
+            // tanpa ini, data tidak ter-bind ke wilayah dan peta tampil tanpa warna.
+            nameProperty: 'nama',
+            roam: false,
+            zoom: 1.12,
+            data,
+            label: {
+              show: true,
+              color: C.dim,
+              fontSize: 10.5,
+              fontFamily: 'Inter',
+              formatter: (p) => NAMA[data.find((d) => d.name === p.name)?.kode] ? p.name.replace('Jakarta ', 'Jak. ') : p.name,
+            },
+            itemStyle: { borderColor: 'rgba(8,9,11,0.9)', borderWidth: 1 },
+            emphasis: {
+              label: { color: C.ink },
+              itemStyle: { borderColor: C.amber, borderWidth: 1.4 },
+            },
+          },
+        ],
+      });
+      resize(ch);
+    }
+
+    /* ---------- tabel ---------- */
+    function tabel(meta) {
+      const tb = document.getElementById('tbody-region');
+      const rows = Object.entries(meta.per_region)
+        .map(([nama, v]) => ({ nama, ...v, selisih: v.naive.mae - v.model.mae }))
+        .sort((a, b) => b.selisih - a.selisih);
+      tb.innerHTML = rows
+        .map((r) => {
+          const cls = r.selisih >= 0 ? 'delta-pos' : 'delta-neg';
+          const tanda = r.selisih >= 0 ? '+' : '−';
+          return `<tr>
+            <td>${r.nama}</td>
+            <td>${nf(r.model.mae, 2)}</td>
+            <td>${nf(r.naive.mae, 2)}</td>
+            <td class="${cls}">${tanda}${nf(Math.abs(r.selisih), 2)}</td>
+            <td>${nf(r.model.pearson_r, 3)}</td>
+            <td>${nf(r.naive.pearson_r, 3)}</td>
+          </tr>`;
+        })
+        .join('');
+    }
+
+    /* ---------- boot ---------- */
+    (async () => {
+      const elTs = document.getElementById('chart-ts');
+      const elCuaca = document.getElementById('chart-cuaca');
+      const elShap = document.getElementById('chart-shap');
+      const elPeta = document.getElementById('chart-peta');
+      setState(elTs, 'memuat data');
+      setState(elCuaca, 'memuat data');
+      setState(elShap, 'memuat data');
+      setState(elPeta, 'memuat data');
+
+      let D;
+      try {
+        D = await load();
+      } catch (e) {
+        const msg = 'gagal memuat /data/*.json. Jalankan ekspor dulu.';
+        [elTs, elCuaca, elShap, elPeta].forEach((el) => setState(el, msg));
+        console.error(e);
+        return;
+      }
+
+      const { meta, evaluasi, deret, geo } = D;
+
+      // angka teks
+      document.getElementById('v-mae-model').textContent = nf(meta.metrik.lgbm.mae);
+      document.getElementById('v-mae-naive').textContent = nf(meta.metrik.naive_lag1.mae);
+      document.getElementById('v-skill').textContent = nf(meta.skill_vs_naive * 100, 1) + '%';
+      document.getElementById('m-model').textContent = nf(meta.metrik.lgbm.mae);
+      document.getElementById('m-naive').textContent = nf(meta.metrik.naive_lag1.mae);
+      document.getElementById('m-skill').textContent = nf(meta.skill_vs_naive * 100, 1) + '%';
+      document.getElementById('m-r').textContent = nf(meta.metrik.lgbm.pearson_r, 3);
+      document.getElementById('m-smape').textContent = nf(meta.metrik.lgbm.smape_pct, 1) + '%';
+      document.getElementById('m-n').textContent = ni(meta.metrik.lgbm.n);
+      document.getElementById('foot-stamp').textContent =
+        'ekspor ' + new Date(meta.dibuat).toLocaleString('id-ID');
+
+      tabel(meta);
+
+      elTs.innerHTML = '';
+      elCuaca.innerHTML = '';
+      elShap.innerHTML = '';
+      elPeta.innerHTML = '';
+
+      chartTS(elTs, evaluasi, 'semua');
+      chartCuaca(elCuaca, deret['jak-pus'].rows, 'bulan');
+      chartShap(elShap, meta.shap);
+      chartPeta(elPeta, geo, meta);
+
+      // tab wilayah untuk deret waktu
+      const tTs = document.getElementById('tabs-ts');
+      tTs.addEventListener('click', (e) => {
+        const b = e.target.closest('.tab');
+        if (!b) return;
+        tTs.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
+        b.setAttribute('aria-selected', 'true');
+        chartTS(elTs, evaluasi, b.dataset.eval || b.dataset.w);
+      });
+
+      // tab wilayah untuk cuaca
+      const tCu = document.getElementById('tabs-cuaca');
+      const tDef = document.getElementById('tabs-def');
+      let curW = 'jak-pus';
+      let curDef = 'bulan';
+      const redrawCuaca = () => {
+        chartCuaca(elCuaca, deret[curW].rows, curDef);
+        document.getElementById('cap-cuaca').dataset.def = curDef;
+      };
+      tCu.addEventListener('click', (e) => {
+        const b = e.target.closest('.tab');
+        if (!b) return;
+        tCu.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
+        b.setAttribute('aria-selected', 'true');
+        curW = b.dataset.w;
+        redrawCuaca();
+      });
+      tDef.addEventListener('click', (e) => {
+        const b = e.target.closest('.tab');
+        if (!b) return;
+        tDef.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
+        b.setAttribute('aria-selected', 'true');
+        curDef = b.dataset.def;
+        redrawCuaca();
+      });
+    })();
+  </script>
+</Base>
