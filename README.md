@@ -236,8 +236,8 @@ Harness export menjalankan `export_dashboard.py`, jadi ia menulis ulang berkas d
 tree tetap bersih setelah tes dijalankan.
 
 CI di `.github/workflows/ci.yml` memasang dependensi, build dashboard, lalu menjalankan
-ketiga harness itu di runner bersih. Hasilnya bisa dicek di tab Actions, bukan cuma
-diklaim di sini.
+ketiga harness itu di runner bersih. Hasilnya sama: 134 PASS / 0 FAIL. Lognya terbuka di
+tab Actions, jadi angka di baris ini bisa diperiksa siapa saja, bukan cuma diklaim.
 
 ## Keterbatasan
 
