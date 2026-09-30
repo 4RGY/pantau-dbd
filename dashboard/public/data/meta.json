@@ -1,5 +1,5 @@
 {
-  "dibuat": "2026-09-30T07:07:07+00:00",
+  "dibuat": "2026-09-30T07:16:56+00:00",
   "cakupan_kasus": {
     "mulai": "2021-01",
     "akhir": "2024-12",
@@ -48,6 +48,7 @@
     "verdict": "KALAH dari baseline",
     "catatan": "Ablasi fitur (cuaca-only / musim-only / penuh) menggeser MAE hanya dalam rentang noise; lonjakan DBD Maret & Juni tidak terbaca dari cuaca t-4. Jangan klaim early warning sampai skill > 2%."
   },
+  "catatan_cuaca": "Fitur model memakai cuaca lag (bulan t-1 sampai t-4) karena forecast dibuat saat data bulan t-1 sudah rilis. Di dashboard, field *_bulan adalah cuaca aktual bulan yang sama dengan kasus, sedangkan *_lag1 adalah cuaca bulan sebelumnya yang benar-benar dipakai model.",
   "shap": [
     {
       "kode": "mo_sin",
