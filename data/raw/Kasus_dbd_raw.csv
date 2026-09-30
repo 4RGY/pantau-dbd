@@ -1,0 +1,289 @@
+tahun,bulan,kabupaten_kota,kasus_dbd
+2024,1,Jakarta Pusat,93
+2024,1,Jakarta Utara,139
+2024,1,Jakarta Barat,198
+2024,1,Jakarta Selatan,258
+2024,1,Jakarta Timur,196
+2024,1,Kab. Kep. Seribu,2
+2024,2,Jakarta Pusat,141
+2024,2,Jakarta Utara,334
+2024,2,Jakarta Barat,473
+2024,2,Jakarta Selatan,526
+2024,2,Jakarta Timur,428
+2024,2,Kab. Kep. Seribu,9
+2024,3,Jakarta Pusat,470
+2024,3,Jakarta Utara,825
+2024,3,Jakarta Barat,1035
+2024,3,Jakarta Selatan,1154
+2024,3,Jakarta Timur,1052
+2024,3,Kab. Kep. Seribu,7
+2024,4,Jakarta Pusat,673
+2024,4,Jakarta Utara,1405
+2024,4,Jakarta Barat,1248
+2024,4,Jakarta Selatan,1193
+2024,4,Jakarta Timur,1577
+2024,4,Kab. Kep. Seribu,6
+2024,5,Jakarta Pusat,563
+2024,5,Jakarta Utara,1276
+2024,5,Jakarta Barat,1176
+2024,5,Jakarta Selatan,1159
+2024,5,Jakarta Timur,1543
+2024,5,Kab. Kep. Seribu,2
+2024,6,Jakarta Pusat,210
+2024,6,Jakarta Utara,482
+2024,6,Jakarta Barat,571
+2024,6,Jakarta Selatan,555
+2024,6,Jakarta Timur,736
+2024,6,Kab. Kep. Seribu,2
+2024,7,Jakarta Pusat,140
+2024,7,Jakarta Utara,386
+2024,7,Jakarta Barat,389
+2024,7,Jakarta Selatan,345
+2024,7,Jakarta Timur,400
+2024,7,Kab. Kep. Seribu,1
+2024,8,Jakarta Pusat,129
+2024,8,Jakarta Utara,317
+2024,8,Jakarta Barat,325
+2024,8,Jakarta Selatan,309
+2024,8,Jakarta Timur,332
+2024,8,Kab. Kep. Seribu,2
+2024,9,Jakarta Pusat,48
+2024,9,Jakarta Utara,189
+2024,9,Jakarta Barat,208
+2024,9,Jakarta Selatan,172
+2024,9,Jakarta Timur,173
+2024,9,Kab. Kep. Seribu,0
+2024,10,Jakarta Pusat,49
+2024,10,Jakarta Utara,153
+2024,10,Jakarta Barat,159
+2024,10,Jakarta Selatan,138
+2024,10,Jakarta Timur,169
+2024,10,Kab. Kep. Seribu,1
+2024,11,Jakarta Pusat,55
+2024,11,Jakarta Utara,144
+2024,11,Jakarta Barat,172
+2024,11,Jakarta Selatan,145
+2024,11,Jakarta Timur,145
+2024,11,Kab. Kep. Seribu,0
+2024,12,Jakarta Pusat,77
+2024,12,Jakarta Utara,200
+2024,12,Jakarta Barat,258
+2024,12,Jakarta Selatan,239
+2024,12,Jakarta Timur,224
+2024,12,Kab. Kep. Seribu,2
+2023,1,Jakarta Pusat,125
+2023,1,Jakarta Utara,211
+2023,1,Jakarta Barat,264
+2023,11,Jakarta Selatan,365
+2023,1,Jakarta Timur,229
+2023,1,Kab. Kep. Seribu,0
+2023,2,Jakarta Pusat,111
+2023,2,Jakarta Utara,233
+2023,2,Jakarta Barat,183
+2023,2,Jakarta Selatan,253
+2023,2,Jakarta Timur,216
+2023,2,Kab. Kep. Seribu,1
+2023,3,Jakarta Pusat,181
+2023,3,Jakarta Utara,389
+2023,3,Jakarta Barat,234
+2023,3,Jakarta Selatan,224
+2023,3,Jakarta Timur,299
+2023,3,Kab. Kep. Seribu,0
+2023,4,Jakarta Pusat,144
+2023,4,Jakarta Utara,421
+2023,4,Jakarta Barat,316
+2023,4,Jakarta Selatan,235
+2023,4,Jakarta Timur,341
+2023,4,Kab. Kep. Seribu,0
+2023,5,Jakarta Pusat,121
+2023,5,Jakarta Utara,322
+2023,5,Jakarta Barat,304
+2023,5,Jakarta Selatan,233
+2023,5,Jakarta Timur,263
+2023,5,Kab. Kep. Seribu,0
+2023,6,Jakarta Pusat,99
+2023,6,Jakarta Utara,216
+2023,6,Jakarta Barat,157
+2023,6,Jakarta Selatan,171
+2023,6,Jakarta Timur,243
+2023,6,Kab. Kep. Seribu,0
+2023,7,Jakarta Pusat,76
+2023,7,Jakarta Utara,130
+2023,7,Jakarta Barat,147
+2023,7,Jakarta Selatan,173
+2023,7,Jakarta Timur,235
+2023,7,Kab. Kep. Seribu,0
+2023,8,Jakarta Pusat,56
+2023,8,Jakarta Utara,162
+2023,8,Jakarta Barat,152
+2023,8,Jakarta Selatan,182
+2023,8,Jakarta Timur,253
+2023,8,Kab. Kep. Seribu,1
+2023,9,Jakarta Pusat,49
+2023,9,Jakarta Utara,115
+2023,9,Jakarta Barat,145
+2023,9,Jakarta Selatan,165
+2023,9,Jakarta Timur,190
+2023,9,Kab. Kep. Seribu,1
+2023,10,Jakarta Pusat,60
+2023,10,Jakarta Utara,111
+2023,10,Jakarta Barat,128
+2023,10,Jakarta Selatan,107
+2023,10,Jakarta Timur,136
+2023,10,Kab. Kep. Seribu,4
+2023,11,Jakarta Pusat,49
+2023,11,Jakarta Utara,78
+2023,11,Jakarta Barat,87
+2023,11,Jakarta Selatan,84
+2023,11,Jakarta Timur,115
+2023,11,Kab. Kep. Seribu,3
+2023,12,Jakarta Pusat,38
+2023,12,Jakarta Utara,91
+2023,12,Jakarta Barat,93
+2023,12,Jakarta Selatan,88
+2023,12,Jakarta Timur,101
+2023,12,Kab. Kep. Seribu,0
+2022,1,Jakarta Pusat,132
+2022,1,Jakarta Utara,332
+2022,1,Jakarta Barat,334
+2022,1,Jakarta Selatan,508
+2022,1,Jakarta Timur,575
+2022,1,Kab. Kep. Seribu,0
+2022,2,Jakarta Pusat,94
+2022,2,Jakarta Utara,192
+2022,2,Jakarta Barat,216
+2022,2,Jakarta Selatan,314
+2022,2,Jakarta Timur,363
+2022,2,Kab. Kep. Seribu,0
+2022,3,Jakarta Pusat,210
+2022,3,Jakarta Utara,505
+2022,3,Jakarta Barat,335
+2022,3,Jakarta Selatan,387
+2022,3,Jakarta Timur,564
+2022,3,Kab. Kep. Seribu,2
+2022,4,Jakarta Pusat,222
+2022,4,Jakarta Utara,545
+2022,4,Jakarta Barat,437
+2022,4,Jakarta Selatan,494
+2022,4,Jakarta Timur,520
+2022,4,Kab. Kep. Seribu,10
+2022,5,Jakarta Pusat,283
+2022,5,Jakarta Utara,667
+2022,5,Jakarta Barat,370
+2022,5,Jakarta Selatan,417
+2022,5,Jakarta Timur,616
+2022,5,Kab. Kep. Seribu,2
+2022,6,Jakarta Pusat,186
+2022,6,Jakarta Utara,569
+2022,6,Jakarta Barat,352
+2022,6,Jakarta Selatan,423
+2022,6,Jakarta Timur,438
+2022,6,Kab. Kep. Seribu,8
+2022,7,Jakarta Pusat,228
+2022,7,Jakarta Utara,483
+2022,7,Jakarta Barat,435
+2022,7,Jakarta Selatan,493
+2022,7,Jakarta Timur,530
+2022,7,Kab. Kep. Seribu,7
+2022,8,Jakarta Pusat,140
+2022,8,Jakarta Utara,413
+2022,8,Jakarta Barat,272
+2022,8,Jakarta Selatan,375
+2022,8,Jakarta Timur,368
+2022,8,Kab. Kep. Seribu,5
+2022,9,Jakarta Pusat,92
+2022,9,Jakarta Utara,304
+2022,9,Jakarta Barat,241
+2022,9,Jakarta Selatan,290
+2022,9,Jakarta Timur,209
+2022,9,Kab. Kep. Seribu,2
+2022,10,Jakarta Pusat,89
+2022,10,Jakarta Utara,226
+2022,10,Jakarta Barat,175
+2022,10,Jakarta Selatan,302
+2022,10,Jakarta Timur,191
+2022,10,Kab. Kep. Seribu,0
+2022,11,Jakarta Pusat,119
+2022,11,Jakarta Utara,214
+2022,11,Jakarta Barat,219
+2022,11,Jakarta Selatan,329
+2022,11,Jakarta Timur,204
+2022,11,Kab. Kep. Seribu,0
+2022,12,Jakarta Pusat,144
+2022,12,Jakarta Utara,226
+2022,12,Jakarta Barat,217
+2022,12,Jakarta Selatan,323
+2022,12,Jakarta Timur,209
+2022,12,Kab. Kep. Seribu,1
+2021,1,Jakarta Pusat,14
+2021,1,Jakarta Utara,19
+2021,1,Jakarta Barat,26
+2021,1,Jakarta Selatan,63
+2021,1,Jakarta Timur,95
+2021,1,Kab. Kep. Seribu,0
+2021,2,Jakarta Pusat,18
+2021,2,Jakarta Utara,37
+2021,2,Jakarta Barat,35
+2021,2,Jakarta Selatan,55
+2021,2,Jakarta Timur,99
+2021,2,Kab. Kep. Seribu,0
+2021,3,Jakarta Pusat,35
+2021,3,Jakarta Utara,102
+2021,3,Jakarta Barat,98
+2021,3,Jakarta Selatan,102
+2021,3,Jakarta Timur,194
+2021,3,Kab. Kep. Seribu,0
+2021,4,Jakarta Pusat,58
+2021,4,Jakarta Utara,141
+2021,4,Jakarta Barat,133
+2021,4,Jakarta Selatan,169
+2021,4,Jakarta Timur,403
+2021,4,Kab. Kep. Seribu,0
+2021,5,Jakarta Pusat,82
+2021,5,Jakarta Utara,180
+2021,5,Jakarta Barat,192
+2021,5,Jakarta Selatan,231
+2021,5,Jakarta Timur,592
+2021,5,Kab. Kep. Seribu,3
+2021,6,Jakarta Pusat,44
+2021,6,Jakarta Utara,127
+2021,6,Jakarta Barat,112
+2021,6,Jakarta Selatan,138
+2021,6,Jakarta Timur,285
+2021,6,Kab. Kep. Seribu,2
+2021,7,Jakarta Pusat,9
+2021,7,Jakarta Utara,59
+2021,7,Jakarta Barat,28
+2021,7,Jakarta Selatan,104
+2021,7,Jakarta Timur,139
+2021,7,Kab. Kep. Seribu,0
+2021,8,Jakarta Pusat,22
+2021,8,Jakarta Utara,77
+2021,8,Jakarta Barat,91
+2021,8,Jakarta Selatan,141
+2021,8,Jakarta Timur,184
+2021,8,Kab. Kep. Seribu,3
+2021,9,Jakarta Pusat,43
+2021,9,Jakarta Utara,112
+2021,9,Jakarta Barat,142
+2021,9,Jakarta Selatan,240
+2021,9,Jakarta Timur,236
+2021,9,Kab. Kep. Seribu,2
+2021,10,Jakarta Pusat,44
+2021,10,Jakarta Utara,114
+2021,10,Jakarta Barat,155
+2021,10,Jakarta Selatan,245
+2021,10,Jakarta Timur,161
+2021,10,Kab. Kep. Seribu,5
+2021,11,Jakarta Pusat,59
+2021,11,Jakarta Utara,150
+2021,11,Jakarta Barat,157
+2021,11,Jakarta Selatan,258
+2021,11,Jakarta Timur,199
+2021,11,Kab. Kep. Seribu,1
+2021,11,Jakarta Pusat,83
+2021,12,Jakarta Utara,221
+2021,12,Jakarta Barat,190
+2021,12,Jakarta Selatan,422
+2021,12,Jakarta Timur,295
+2021,12,Kab. Kep. Seribu,7

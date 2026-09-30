@@ -1,0 +1,9 @@
+polars==1.44.2
+lightgbm==4.7.0
+statsmodels==0.15.0
+shap==0.51.0
+numpy==2.4.3
+pandas==3.0.6
+scikit-learn==1.9.0
+requests==2.33.0
+pyarrow==25.0.1

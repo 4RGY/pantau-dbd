@@ -1,0 +1,8 @@
+# normalisasi line ending: simpan LF di repo, biarkan git urus checkout
+* text=auto
+
+# biner, jangan diutak-atik
+*.parquet binary
+*.pkl binary
+*.png binary
+*.jpg binary

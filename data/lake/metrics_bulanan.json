@@ -1,0 +1,166 @@
+{
+  "agregat": {
+    "lgbm": {
+      "mae": 99.93,
+      "rmse": 182.74,
+      "n": 145,
+      "smape_pct": 50.2,
+      "pearson_r": 0.8483
+    },
+    "naive_lag1": {
+      "mae": 97.64,
+      "rmse": 190.03,
+      "n": 145,
+      "smape_pct": 46.5,
+      "pearson_r": 0.8305
+    },
+    "glm_ratio": {
+      "mae": 104.32,
+      "rmse": 206.56,
+      "n": 145,
+      "smape_pct": 49.8,
+      "pearson_r": 0.8332
+    },
+    "seasonal_lag12": {
+      "mae": 188.85,
+      "rmse": 317.54,
+      "n": 144,
+      "smape_pct": 84.76,
+      "pearson_r": 0.3352
+    }
+  },
+  "skill_vs_naive": -0.0235,
+  "keputusan": {
+    "baseline_terkuat_mae": 97.64,
+    "model_terbaik": "lgbm",
+    "skill_vs_baseline": -0.0235,
+    "verdict": "KALAH dari baseline",
+    "catatan": "Ablasi fitur (cuaca-only / musim-only / penuh) menggeser MAE hanya dalam rentang noise; lonjakan DBD Maret & Juni tidak terbaca dari cuaca t-4. Jangan klaim early warning sampai skill > 2%."
+  },
+  "fitur_lgbm": [
+    "ch_lag1",
+    "ch_lag2",
+    "ch_lag3",
+    "ch_lag4",
+    "ch_rol3",
+    "ch_rol6",
+    "rh_lag1",
+    "tavg_lag1",
+    "hhuj_lag1",
+    "mo_sin",
+    "mo_cos",
+    "wilayah_kode"
+  ],
+  "fitur_glm": [
+    "ch_lag1",
+    "ch_rol3",
+    "rh_lag1",
+    "tavg_lag1",
+    "mo_sin",
+    "mo_cos",
+    "log_anchor"
+  ],
+  "per_region": {
+    "Jakarta Pusat": {
+      "model": {
+        "mae": 67.33,
+        "rmse": 111.25,
+        "n": 24,
+        "smape_pct": 37.04,
+        "pearson_r": 0.773
+      },
+      "naive": {
+        "mae": 64.88,
+        "rmse": 114.16,
+        "n": 24,
+        "smape_pct": 34.73,
+        "pearson_r": 0.7583
+      }
+    },
+    "Jakarta Utara": {
+      "model": {
+        "mae": 135.05,
+        "rmse": 227.33,
+        "n": 24,
+        "smape_pct": 33.54,
+        "pearson_r": 0.7766
+      },
+      "naive": {
+        "mae": 136.5,
+        "rmse": 237.94,
+        "n": 24,
+        "smape_pct": 33.88,
+        "pearson_r": 0.7558
+      }
+    },
+    "Jakarta Barat": {
+      "model": {
+        "mae": 113.52,
+        "rmse": 183.14,
+        "n": 24,
+        "smape_pct": 31.22,
+        "pearson_r": 0.8462
+      },
+      "naive": {
+        "mae": 118.71,
+        "rmse": 196.0,
+        "n": 24,
+        "smape_pct": 31.1,
+        "pearson_r": 0.8189
+      }
+    },
+    "Jakarta Selatan": {
+      "model": {
+        "mae": 132.79,
+        "rmse": 206.82,
+        "n": 25,
+        "smape_pct": 39.56,
+        "pearson_r": 0.8118
+      },
+      "naive": {
+        "mae": 120.8,
+        "rmse": 208.73,
+        "n": 25,
+        "smape_pct": 35.24,
+        "pearson_r": 0.798
+      }
+    },
+    "Jakarta Timur": {
+      "model": {
+        "mae": 147.91,
+        "rmse": 244.15,
+        "n": 24,
+        "smape_pct": 33.83,
+        "pearson_r": 0.8231
+      },
+      "naive": {
+        "mae": 142.54,
+        "rmse": 254.42,
+        "n": 24,
+        "smape_pct": 30.53,
+        "pearson_r": 0.8025
+      }
+    },
+    "Kepulauan Seribu": {
+      "model": {
+        "mae": 1.61,
+        "rmse": 2.2,
+        "n": 24,
+        "smape_pct": 133.41,
+        "pearson_r": 0.5899
+      },
+      "naive": {
+        "mae": 1.46,
+        "rmse": 2.13,
+        "n": 24,
+        "smape_pct": 127.48,
+        "pearson_r": 0.5984
+      }
+    }
+  },
+  "desain": {
+    "target": "log((kasus_t+1)/(kasus_lag1+1))",
+    "basis": "growth-rate forecasting, anchored AR",
+    "fold": "train 2021-2022 test 2023; train 2021-2023 test 2024"
+  }
+}

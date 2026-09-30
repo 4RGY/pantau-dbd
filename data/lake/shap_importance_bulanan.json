@@ -1,0 +1,104 @@
+{
+  "features": [
+    {
+      "nama": "kasus_lag1",
+      "mean_abs": 0.50481
+    },
+    {
+      "nama": "ch_lag2",
+      "mean_abs": 0.06937
+    },
+    {
+      "nama": "kepadatan_km2",
+      "mean_abs": 0.06532
+    },
+    {
+      "nama": "ch_rol3",
+      "mean_abs": 0.06414
+    },
+    {
+      "nama": "kasus_lag12",
+      "mean_abs": 0.04943
+    },
+    {
+      "nama": "ch_lag1",
+      "mean_abs": 0.0383
+    },
+    {
+      "nama": "tavg_rol3",
+      "mean_abs": 0.02783
+    },
+    {
+      "nama": "rh_lag1",
+      "mean_abs": 0.02537
+    },
+    {
+      "nama": "tavg_lag1",
+      "mean_abs": 0.02276
+    },
+    {
+      "nama": "wilayah_kode",
+      "mean_abs": 0.02234
+    },
+    {
+      "nama": "mo_sin",
+      "mean_abs": 0.02176
+    },
+    {
+      "nama": "rh_rol3",
+      "mean_abs": 0.01871
+    },
+    {
+      "nama": "mo_cos",
+      "mean_abs": 0.01655
+    },
+    {
+      "nama": "rh_lag2",
+      "mean_abs": 0.01433
+    },
+    {
+      "nama": "hhuj_lag1",
+      "mean_abs": 0.01405
+    },
+    {
+      "nama": "rh_lag4",
+      "mean_abs": 0.00945
+    },
+    {
+      "nama": "ch_lag4",
+      "mean_abs": 0.00864
+    },
+    {
+      "nama": "ch_lag3",
+      "mean_abs": 0.00814
+    },
+    {
+      "nama": "ch_rol6",
+      "mean_abs": 0.00767
+    },
+    {
+      "nama": "tavg_lag3",
+      "mean_abs": 0.00552
+    },
+    {
+      "nama": "tavg_lag2",
+      "mean_abs": 0.00432
+    },
+    {
+      "nama": "hhuj_lag4",
+      "mean_abs": 0.0041
+    },
+    {
+      "nama": "rh_lag3",
+      "mean_abs": 0.00332
+    },
+    {
+      "nama": "tavg_lag4",
+      "mean_abs": 0.00316
+    },
+    {
+      "nama": "hhuj_lag2",
+      "mean_abs": 0.00315
+    }
+  ]
+}

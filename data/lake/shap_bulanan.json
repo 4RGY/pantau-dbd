@@ -1,0 +1,52 @@
+{
+  "features": [
+    {
+      "nama": "mo_sin",
+      "mean_abs": 0.11643
+    },
+    {
+      "nama": "ch_lag1",
+      "mean_abs": 0.05089
+    },
+    {
+      "nama": "ch_lag4",
+      "mean_abs": 0.05063
+    },
+    {
+      "nama": "tavg_lag1",
+      "mean_abs": 0.0479
+    },
+    {
+      "nama": "ch_rol6",
+      "mean_abs": 0.04182
+    },
+    {
+      "nama": "mo_cos",
+      "mean_abs": 0.0345
+    },
+    {
+      "nama": "hhuj_lag1",
+      "mean_abs": 0.01466
+    },
+    {
+      "nama": "rh_lag1",
+      "mean_abs": 0.01427
+    },
+    {
+      "nama": "ch_lag2",
+      "mean_abs": 0.01122
+    },
+    {
+      "nama": "ch_rol3",
+      "mean_abs": 0.01092
+    },
+    {
+      "nama": "ch_lag3",
+      "mean_abs": 0.01075
+    },
+    {
+      "nama": "wilayah_kode",
+      "mean_abs": 0.0009
+    }
+  ]
+}
