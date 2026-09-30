@@ -134,11 +134,13 @@ const WILAYAH = [
       </div>
 
       <div class="tabs" role="tablist" aria-label="Pilih wilayah" id="tabs-ts">
-        <button class="tab" role="tab" data-w="semua" aria-selected="true">Semua</button>
+        <button class="tab" role="tab" id="tab-ts-semua" aria-controls="panel-ts" data-w="semua" aria-selected="true">Semua</button>
         {WILAYAH.map((w) => (
           <button
             class="tab"
             role="tab"
+            id={`tab-ts-${w.kode}`}
+            aria-controls="panel-ts"
             data-w={w.kode}
             data-eval={w.eval}
             aria-selected="false">{w.pendek}</button>
@@ -151,7 +153,7 @@ const WILAYAH = [
         <span><i class="swatch sw-steel"></i>Naive lag-1</span>
       </div>
 
-      <div class="haze">
+      <div class="haze" role="tabpanel" id="panel-ts" aria-labelledby="tab-ts-semua" tabindex="0">
         <div class="chart chart-tall" id="chart-ts" role="img" aria-label="Grafik kasus terlapis melawan prediksi"></div>
       </div>
       <p class="chart-cap">
@@ -174,15 +176,15 @@ const WILAYAH = [
       </div>
 
       <div class="tabs" role="tablist" aria-label="Pilih wilayah" id="tabs-cuaca">
-        <button class="tab" role="tab" data-w="jak-pus" aria-selected="true">Jakpus</button>
+        <button class="tab" role="tab" id="tab-cu-jak-pus" aria-controls="panel-cuaca" data-w="jak-pus" aria-selected="true">Jakpus</button>
         {WILAYAH.slice(1).map((w) => (
-          <button class="tab" role="tab" data-w={w.kode} aria-selected="false">{w.pendek}</button>
+          <button class="tab" role="tab" id={`tab-cu-${w.kode}`} aria-controls="panel-cuaca" data-w={w.kode} aria-selected="false">{w.pendek}</button>
         ))}
       </div>
 
       <div class="tabs mt-m" role="tablist" aria-label="Pilih definisi cuaca" id="tabs-def">
-        <button class="tab" role="tab" data-def="bulan" aria-selected="true">Cuaca bulan sama</button>
-        <button class="tab" role="tab" data-def="lag1" aria-selected="false">Cuaca bulan sebelumnya</button>
+        <button class="tab" role="tab" id="tab-def-bulan" aria-controls="panel-cuaca" data-def="bulan" aria-selected="true">Cuaca bulan sama</button>
+        <button class="tab" role="tab" id="tab-def-lag1" aria-controls="panel-cuaca" data-def="lag1" aria-selected="false">Cuaca bulan sebelumnya</button>
       </div>
 
       <div class="legend mt-m">
@@ -190,7 +192,7 @@ const WILAYAH = [
         <span><i class="swatch sw-ink"></i>Kasus DBD</span>
       </div>
 
-      <div class="haze">
+      <div class="haze" role="tabpanel" id="panel-cuaca" aria-labelledby="tab-cu-jak-pus tab-def-bulan" tabindex="0">
         <div class="chart" id="chart-cuaca" role="img" aria-label="Grafik curah hujan dan kasus DBD"></div>
       </div>
       <p class="chart-cap" id="cap-cuaca">
@@ -729,17 +731,48 @@ const WILAYAH = [
       chartShap(elShap, meta.shap);
       chartPeta(elPeta, geo, meta);
 
+      // Tablist: roving tabindex + panah kiri/kanan + Home/End (pola ARIA APG).
+      // Satu tablist jadi SATU stop di urutan tab; sisanya dijangkau pakai panah.
+      const initTabs = (el, onSelect) => {
+        const tabs = [...el.querySelectorAll('.tab')];
+        const pilih = (b, fokus) => {
+          tabs.forEach((t) => {
+            const on = t === b;
+            t.setAttribute('aria-selected', on ? 'true' : 'false');
+            t.tabIndex = on ? 0 : -1;
+          });
+          if (fokus) b.focus();
+          onSelect(b);
+        };
+        el.addEventListener('click', (e) => {
+          const b = e.target.closest('.tab');
+          if (b && tabs.includes(b)) pilih(b, false);
+        });
+        el.addEventListener('keydown', (e) => {
+          const i = tabs.indexOf(document.activeElement);
+          if (i < 0) return;
+          let n = null;
+          if (e.key === 'ArrowRight') n = (i + 1) % tabs.length;
+          else if (e.key === 'ArrowLeft') n = (i - 1 + tabs.length) % tabs.length;
+          else if (e.key === 'Home') n = 0;
+          else if (e.key === 'End') n = tabs.length - 1;
+          if (n === null) return;
+          e.preventDefault();
+          pilih(tabs[n], true);
+        });
+        const aktif = tabs.find((t) => t.getAttribute('aria-selected') === 'true') || tabs[0];
+        tabs.forEach((t) => { t.tabIndex = t === aktif ? 0 : -1; });
+      };
+
+      const tabAktif = (el) => el.querySelector('.tab[aria-selected="true"]');
+
       // tab wilayah untuk deret waktu
-      const tTs = document.getElementById('tabs-ts');
-      tTs.addEventListener('click', (e) => {
-        const b = e.target.closest('.tab');
-        if (!b) return;
-        tTs.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
-        b.setAttribute('aria-selected', 'true');
+      initTabs(document.getElementById('tabs-ts'), (b) => {
+        document.getElementById('panel-ts').setAttribute('aria-labelledby', b.id);
         chartTS(elTs, evaluasi, b.dataset.eval || b.dataset.w);
       });
 
-      // tab wilayah untuk cuaca
+      // tab wilayah + definisi cuaca untuk grafik cuaca (dua tablist, satu panel)
       const tCu = document.getElementById('tabs-cuaca');
       const tDef = document.getElementById('tabs-def');
       let curW = 'jak-pus';
@@ -747,23 +780,11 @@ const WILAYAH = [
       const redrawCuaca = () => {
         chartCuaca(elCuaca, deret[curW].rows, curDef);
         document.getElementById('cap-cuaca').dataset.def = curDef;
+        document.getElementById('panel-cuaca')
+          .setAttribute('aria-labelledby', `${tabAktif(tCu).id} ${tabAktif(tDef).id}`);
       };
-      tCu.addEventListener('click', (e) => {
-        const b = e.target.closest('.tab');
-        if (!b) return;
-        tCu.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
-        b.setAttribute('aria-selected', 'true');
-        curW = b.dataset.w;
-        redrawCuaca();
-      });
-      tDef.addEventListener('click', (e) => {
-        const b = e.target.closest('.tab');
-        if (!b) return;
-        tDef.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', 'false'));
-        b.setAttribute('aria-selected', 'true');
-        curDef = b.dataset.def;
-        redrawCuaca();
-      });
+      initTabs(tCu, (b) => { curW = b.dataset.w; redrawCuaca(); });
+      initTabs(tDef, (b) => { curDef = b.dataset.def; redrawCuaca(); });
     })();
   </script>
 </Base>
