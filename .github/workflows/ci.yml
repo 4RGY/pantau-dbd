@@ -36,7 +36,7 @@ jobs:
         working-directory: dashboard
         run: npm ci --no-audit --no-fund
 
-      # Dua harness membaca dashboard/dist/, jadi build harus jalan lebih dulu.
+      # Tiga harness membaca dashboard/dist/, jadi build harus jalan lebih dulu.
       - name: Build dashboard
         working-directory: dashboard
         run: npm run build
