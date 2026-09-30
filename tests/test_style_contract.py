@@ -138,6 +138,38 @@ if os.path.exists(DIST_HTML):
     cek("blok script tidak diawali komentar (jebakan Astro)", not awal.startswith("//"),
         f"baris pertama: {awal[:50]!r}")
 
+print("\n=== 7. kartu share menunjuk domain yang benar ===")
+# Bug nyata yang pernah terjadi di repo ini: `site` diisi pantau-dbd.vercel.app padahal
+# alias project Vercel-nya pantau-dbd-seven.vercel.app (yang polos sudah dipakai orang
+# lain). Halaman tetap HTTP 200 dan konsol tetap bersih, tapi og:image menunjuk berkas
+# yang tidak ada, jadi kartu share-nya kosong. Tidak ada gate lain yang menangkapnya.
+CFG = os.path.join(ROOT, "dashboard", "astro.config.mjs")
+if os.path.exists(DIST_HTML) and os.path.exists(CFG):
+    ms = re.search(r"site:\s*['\"]([^'\"]+)['\"]", baca(CFG))
+    site = ms.group(1).rstrip("/") if ms else ""
+    cek("astro.config.mjs punya site absolut", site.startswith("http"), site or "tidak ada")
+
+    d = baca(DIST_HTML)
+    tag = {
+        "og:url": re.search(r'og:url"\s+content="([^"]+)"', d),
+        "og:image": re.search(r'og:image"\s+content="([^"]+)"', d),
+        "canonical": re.search(r'rel="canonical"\s+href="([^"]+)"', d),
+    }
+    for nama, m in tag.items():
+        val = m.group(1) if m else ""
+        cek(f"{nama} memakai domain site", val == site or val.startswith(site + "/"),
+            val or "tidak ada")
+
+    # og:image dan ikon harus benar-benar ada sebagai berkas di hasil build
+    if tag["og:image"] and site:
+        rel = tag["og:image"].group(1)[len(site):].lstrip("/")
+        cek(f"berkas og:image ada di build ({rel})",
+            os.path.exists(os.path.join(DIST, rel)))
+
+    for m in re.finditer(r'<link[^>]+rel="(?:icon|apple-touch-icon)"[^>]+href="([^"]+)"', d):
+        rel = m.group(1).lstrip("/")
+        cek(f"berkas ikon ada di build ({rel})", os.path.exists(os.path.join(DIST, rel)))
+
 print("\n" + "=" * 52)
 print(f"HASIL: {len(lolos)} PASS / {len(gagal)} FAIL")
 if gagal:

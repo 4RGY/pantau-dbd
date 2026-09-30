@@ -1,7 +1,11 @@
 # pantau-dbd
 
+[![CI](https://github.com/4RGY/pantau-dbd/actions/workflows/ci.yml/badge.svg)](https://github.com/4RGY/pantau-dbd/actions/workflows/ci.yml)
+
 Peringatan dini (EWS) Demam Berdarah Dengue untuk DKI Jakarta. Pipeline dari data cuaca
 dan laporan kasus sampai model prediksi dan dashboard.
+
+Live: https://pantau-dbd-seven.vercel.app
 
 Status: **tahap riset**. Model belum mengalahkan baseline naive. Semua angka di bawah
 apa adanya, termasuk yang jelek.
@@ -98,6 +102,29 @@ python -m venv .venv
 cd dashboard && npm install && npm run dev
 ```
 
+## Tes
+
+Repo ini tidak punya test runner, dan sengaja tidak menambah pytest. Yang ada tiga harness
+kontrak di `tests/`, dijalankan sebagai skrip biasa (stdlib + polars) supaya hasilnya bisa
+dibaca siapa pun tanpa memasang apa pun:
+
+```bash
+.venv/Scripts/pip install -r requirements-dev.txt
+.venv/Scripts/python.exe tests/run_all.py
+```
+
+| Berkas | Yang dijaga |
+|---|---|
+| `tests/test_export_contract.py` | pipeline ke JSON dashboard: angka cocok dengan `data/lake`, export deterministik, plus kontrol negatif |
+| `tests/test_dashboard_contract.py` | kode wilayah lintas berkas (`jak-pus` vs `Jakpus` vs `Jakarta Pusat`) dan isi hasil build |
+| `tests/test_style_contract.py` | lantai ukuran font, reduced-motion, tabel, dan skrip halaman benar-benar dimuat |
+
+Harness export menjalankan `export_dashboard.py`, jadi ia menulis ulang berkas di
+`dashboard/public/data/`. Isi sebelum tes disimpan dan dipulihkan di akhir supaya working
+tree tetap bersih setelah tes dijalankan.
+
+CI di `.github/workflows/ci.yml` menjalankan build dan ketiga harness itu di runner bersih.
+
 ## Keterbatasan
 
 - Kasus DBD dilaporkan per bulan. Horizon mingguan butuh disagregasi dan itu menambah noise.
@@ -109,7 +136,19 @@ cd dashboard && npm install && npm run dev
 ## Dashboard
 
 Astro statis di `dashboard/`, membaca JSON dari `dashboard/public/data/`. Empat grafik
-(deret waktu, cuaca vs kasus, SHAP, peta selisih MAE) plus tabel per wilayah.
+(deret waktu, cuaca vs kasus, SHAP, peta selisih MAE) plus tabel per wilayah. Tablist
+mengikuti pola ARIA APG: panah kiri/kanan, Home, dan End memindahkan fokus, satu tab
+punya `tabindex="0"` dan sisanya `-1`.
+
+Bundel JS satu berkas 580 kB (194 kB gzip). Itu ECharts dengan impor per-modul, bukan
+paket penuh; impor penuh menaikkannya ke 1.045 kB (346 kB gzip). Karena halaman ini
+mengimpor per-modul, **menambah tipe chart baru wajib didaftarkan di `echarts.use()`**
+pada `src/pages/index.astro`. Kalau lupa, chart-nya kosong tanpa error apa pun.
+Ukurannya dijaga `tests/test_style_contract.py`.
+
+Aset sosial (`og.png` 1200x630, favicon) dibuat `tools/make_assets.py` dari angka asli di
+`data/lake`, bukan gambar tempelan, supaya kartu share tidak bisa berbohong kalau model
+di-retrain. Kalau angka berubah, jalankan ulang skripnya.
 
 Catatan pemeliharaan: ada **dua sistem kode wilayah** yang hidup berdampingan.
 
@@ -123,3 +162,10 @@ Pemetaannya eksplisit di array `WILAYAH` pada `src/pages/index.astro`. Kalau sat
 tidak dipetakan, grafik wilayah jadi kosong **tanpa error apa pun** di console. Karena itu
 `chartTS()` sekarang menampilkan pesan merah kalau tidak ada baris yang cocok, bukan
 kanvas kosong.
+
+Jebakan Astro 5.18.2: komentar sebagai baris **pertama** di dalam blok `<script>` membuat
+Astro membuang tag `<script>` dari HTML hasil build. Chunk JS tetap ditulis ke
+`dist/_astro/`, tapi tidak pernah direferensikan, jadi semua chart kosong sementara konsol
+tetap bersih tanpa error. Dokumentasi di dalam blok script harus diletakkan setelah import
+pertama. Dijaga otomatis oleh `tests/test_style_contract.py` seksi 6, yang memeriksa
+`dist/index.html` benar-benar mereferensikan berkas JS-nya.
