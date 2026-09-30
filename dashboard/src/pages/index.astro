@@ -231,6 +231,10 @@ const WILAYAH = [
       </div>
       <div class="tbl-wrap">
         <table>
+          <caption class="sr">
+            MAE dan korelasi per kotamadya: model LightGBM melawan baseline naive
+            lag-1, dua fold walk-forward (uji 2023 dan uji 2024).
+          </caption>
           <thead>
             <tr>
               <th scope="col">Wilayah</th>
@@ -244,6 +248,7 @@ const WILAYAH = [
           <tbody id="tbody-region"></tbody>
         </table>
       </div>
+      <p class="tbl-hint">Geser tabel ke samping untuk melihat kolom r naive.</p>
       <p class="chart-cap">
         Jakarta Barat dan Jakarta Utara sedikit lebih baik dengan model. Kepulauan Seribu
         ekstrem dengan cara lain: kasus di sana rata-rata 2,2 per bulan dan tidak pernah
@@ -321,12 +326,34 @@ const WILAYAH = [
         Sumber: Open-Meteo archive API, Dinkes DKI Jakarta, BPS. Evaluasi walk-forward
         out-of-sample.
       </div>
-      <div class="num" id="foot-stamp">memuat</div>
+      <div class="foot-links">
+        <a class="link" href="https://github.com/4RGY/pantau-dbd">Kode dan data</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a class="link" href="https://angg4ra.my.id">Anggara</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span class="num" id="foot-stamp">memuat</span>
+      </div>
     </footer>
   </main>
 
   <script>
-    import * as echarts from 'echarts';
+    import * as echarts from 'echarts/core';
+    import { LineChart, BarChart, MapChart } from 'echarts/charts';
+    import { CanvasRenderer } from 'echarts/renderers';
+    import { GridComponent, TooltipComponent, VisualMapComponent } from 'echarts/components';
+
+    // Impor per-modul menggantikan impor paket penuh ECharts, yang menarik SELURUH
+    // paket (termasuk peta dunia dan chart yang tidak dipakai). Fitur yang benar-benar
+    // dipakai halaman ini: 4 line, 2 bar, 1 map (registerMap), tooltip, grid, visualMap.
+    // Menambah tipe chart baru WAJIB ditambahkan di daftar use() di bawah, kalau tidak
+    // chart-nya kosong tanpa error apa pun.
+    //
+    // JEBAKAN (terukur, Astro 5.18.2): komentar sebagai baris PERTAMA di dalam blok
+    // script ini membuat Astro membuang tag <script> dari HTML hasil build. Chunk JS
+    // tetap ditulis ke dist/_astro/ tapi tidak pernah direferensikan, jadi SEMUA chart
+    // kosong sementara konsol tetap bersih tanpa error. Dokumentasi tetap boleh ada di
+    // dalam blok script, asalkan tidak mendahului import pertama.
+    echarts.use([LineChart, BarChart, MapChart, CanvasRenderer, GridComponent, TooltipComponent, VisualMapComponent]);
 
     const C = {
       ink: '#eceae6',

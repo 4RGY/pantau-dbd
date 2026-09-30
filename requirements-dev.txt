@@ -1,0 +1,8 @@
+# Dependensi untuk tests/ (kontrak pipeline -> JSON -> build dashboard).
+#
+# Sengaja TIDAK memakai requirements.txt penuh: harness kontrak hanya butuh polars
+# dan numpy. Menarik lightgbm/statsmodels/shap ke CI cuma menambah waktu dan
+# titik gagal tanpa menambah cakupan. Untuk menjalankan pipeline penuh, pakai
+# requirements.txt.
+polars==1.44.2
+numpy==2.4.3

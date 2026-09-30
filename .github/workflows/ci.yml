@@ -1,0 +1,45 @@
+name: CI
+
+# Repo ini tidak punya test runner. Yang ada adalah tiga harness kontrak di tests/.
+# Workflow ini menjalankannya di runner bersih, supaya klaim di README (walk-forward,
+# angka metrik, kontrak kode wilayah) bisa DICEK orang lain, bukan cuma dipercaya.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verifikasi:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+
+      - name: Pasang dependensi test
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
+
+      - name: Pasang dependensi dashboard
+        working-directory: dashboard
+        run: npm ci --no-audit --no-fund
+
+      # Dua harness membaca dashboard/dist/, jadi build harus jalan lebih dulu.
+      - name: Build dashboard
+        working-directory: dashboard
+        run: npm run build
+
+      - name: Jalankan harness kontrak
+        run: python tests/run_all.py

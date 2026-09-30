@@ -1,0 +1,36 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Halaman tidak ditemukan / Pantau DBD"
+  desc="Alamat yang diminta tidak ada di Pantau DBD. Kembali ke dashboard peringatan dini DBD DKI Jakarta."
+>
+  <main class="wrap">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Galat 404</p>
+        <h1 class="hero-title">Alamat ini <em>tidak ada</em></h1>
+      </div>
+      <dl class="hero-meta">
+        <div class="meta-row">
+          <dt>Status</dt>
+          <dd class="num">404</dd>
+        </div>
+      </dl>
+    </header>
+
+    <section>
+      <div class="haze">
+        <p class="note-b">
+          Yang ada cuma satu halaman: dashboard peringatan dini DBD Jakarta, berisi
+          hasil evaluasi walk-forward LightGBM, GLM rasio, dan baseline naive untuk
+          enam kotamadya.
+        </p>
+        <p class="mt-m">
+          <a class="link" href="/">Buka dashboard</a>
+        </p>
+      </div>
+    </section>
+  </main>
+</Base>

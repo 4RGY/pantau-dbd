@@ -418,6 +418,45 @@ footer {
   flex-wrap: wrap;
 }
 
+.foot-links {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.foot-links .sep { color: var(--line-2); }
+
+/* Tautan keluar. Sebelum ini halaman tidak punya satu pun tautan keluar, jadi
+   pembaca tidak punya jalan ke kode dan datanya. */
+.link {
+  color: var(--ink-dim);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.22);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--amber);
+  text-decoration-color: var(--amber);
+}
+
+/* Petunjuk geser: hanya muncul kalau tabel benar-benar terpotong, yaitu di layar
+   sempit. Di layar lebar tabelnya utuh, jadi petunjuknya malah jadi noise. */
+.tbl-hint {
+  display: none;
+  margin: 10px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 640px) {
+  .tbl-hint { display: block; }
+}
+
 /* ---------- utilitas ---------- */
 
 .mt-l { margin-top: clamp(22px, 3vw, 36px); }
